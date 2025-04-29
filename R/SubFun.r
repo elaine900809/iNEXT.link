@@ -3727,7 +3727,7 @@ MakeTable_Empericalprofile = function(data, B, q, conf){
 }
 
 
-Evenness.profile_asym <- function(x, q, datatype = c("abundance","incidence_freq"), method, E.class) {
+Evenness.profile_asym <- function(x, q, datatype = c("abundance","incidence_freq"), E.class) {
   
   estqD = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', q, datatype, nboot = 0) |> filter(Method == "Asymptotic")
   estS = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', 0, datatype, nboot = 0) |> filter(Method == "Asymptotic")
@@ -3823,8 +3823,7 @@ Evenness_asym <- function (data, q = seq(0, 2, 0.2), datatype = "abundance",
     stop("The sample coverage value should be a value between zero and one.", 
          call. = FALSE)
   if (datatype == "abundance") {
-    qD <- Evenness.profile_asym(data, q, "abundance", method, 
-                           E.class)
+    qD <- Evenness.profile_asym(data, q, "abundance", E.class)
     qD <- purrr::map(qD, as.vector)
     if (nboot > 1) {
       Prob.hat <- lapply(1:length(data), function(i) iNEXT.3D:::EstiBootComm.Ind(data[[i]]))
@@ -3834,8 +3833,7 @@ Evenness_asym <- function (data, q = seq(0, 2, 0.2), datatype = "abundance",
         dat = lapply(1:length(Abun.Mat), function(j) Abun.Mat[[j]][, 
                                                                    b])
         names(dat) = paste("Site", 1:length(dat), sep = "")
-        dat.qD = Evenness.profile_asym(dat, q, "abundance", 
-                                  method, E.class)
+        dat.qD = Evenness.profile_asym(dat, q, "abundance", E.class)
         unlist(dat.qD)
       }), nrow = length(q) * length(E.class) * length(Abun.Mat)), 
       1, sd, na.rm = TRUE)

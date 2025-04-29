@@ -1730,6 +1730,11 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #' output_spec = Spec.link(beetles)
 #' output_spec
 #' @export
+#' 
+
+# load("C:/Users/stat_835/Desktop/learning/¦M”Ñ›P/network/network_thsis/network_thesis/data/data_polination_plant.rda")
+# data = data_polination_plant
+# Spec.link(data_polination_plant,q = c(1,2),SC = 1, nboot = 0)
 
 Spec.link <- function(data, q = seq(0, 2, 0.2),
                       method = "Estimated",
