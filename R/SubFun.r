@@ -497,19 +497,19 @@ datainffun <- function(data, row.distM = NULL,col.distM = NULL, datatype){
   rownames(res) <- c("n", "S.obs(row)","S.obs(col)","Links.obs","Connectance", "f1", "f2", "a1'", "a2'", "d_mean")
 
   res[1,1] <- as.integer(sum(data))
-  if("matrix" %in% class(data)){
-    res[2,1] <-  sum(rowSums(data)>0)%>%as.integer()
-    res[3,1] <-  sum(colSums(data)>0)%>%as.integer() 
+  if("matrix" %in% class(data)|"data.frame" %in% class(data)){
+    res[2,1] <-  as.integer(sum(rowSums(data)>0))
+    res[3,1] <-  as.integer(sum(colSums(data)>0))
   }
   else{
-    res[2,1] <-  nrow(data[rowSums(data)>0])%>%as.integer()
-    res[3,1] <-  ncol(data[colSums(data)>0])%>%as.integer() 
+    res[2,1] <-  as.integer(nrow(data[rowSums(data)>0]))
+    res[3,1] <-  as.integer(ncol(data[colSums(data)>0]))
   }
-  res[4,1] <-  sum(data>0)%>%as.integer()
+  res[4,1] <-  as.integer(sum(data>0))
 
   res[5,1] <-  round(sum(data>0)/ncol(data)/nrow(data),4)
-  res[6,1] <-  sum(data == 1)%>%as.integer()
-  res[7,1] <-  sum(data == 2)%>%as.integer()
+  res[6,1] <-  as.integer(sum(data == 1))
+  res[7,1] <-  as.integer(sum(data == 2))
   distM =  1-(1-row.distM[rep(1:nrow(row.distM),rep(nrow(col.distM),nrow(row.distM))),rep(1:nrow(row.distM),rep(nrow(col.distM),nrow(row.distM)))])*(1-col.distM[rep(1:nrow(col.distM),nrow(row.distM)),rep(1:nrow(col.distM),nrow(row.distM))])
   distM_name = paste0(rep(colnames(col.distM),3),".",rep(rownames(row.distM),rep(ncol(col.distM),nrow(row.distM))))
   colnames(distM) = distM_name
@@ -552,23 +552,22 @@ datainfphy <- function(data, row.tree = NULL,col.tree = NULL, datatype){
   rownames(res) <- c("n", "S.obs(row)","S.obs(col)","Links.obs","Connectance", "f1*", "f2*", "g1", "g2", "PD.obs", "T1*T2")
 
   res[1,1] <- as.integer(sum(data))
-  if("matrix" %in% class(data)){
-    res[2,1] <-  sum(rowSums(data)>0)%>%as.integer()
-    res[3,1] <-  sum(colSums(data)>0)%>%as.integer() 
+  if("matrix" %in% class(data)|"data.frame" %in% class(data)){
+    res[2,1] <-  as.integer(sum(rowSums(data)>0)) 
+    res[3,1] <-  as.integer(sum(colSums(data)>0))
+  }else{
+    res[2,1] <-  as.integer(nrow(data[rowSums(data)>0]))
+    res[3,1] <-  as.integer(ncol(data[colSums(data)>0])) 
   }
-  else{
-    res[2,1] <-  nrow(data[rowSums(data)>0])%>%as.integer()
-    res[3,1] <-  ncol(data[colSums(data)>0])%>%as.integer() 
-  }
-  res[4,1] <-  sum(data>0)%>%as.integer()
+  res[4,1] <-  as.integer(sum(data>0))
 
   res[5,1] <-  round(sum(data>0)/ncol(data)/nrow(data),4)
   phy <- create.aili(data,row.tree = row.tree,col.tree = col.tree)
-  res[6,1] <-  sum(phy$branch.abun==1)%>%as.integer()
-  res[7,1] <-  sum(phy$branch.abun==2)%>%as.integer()
+  res[6,1] <-  as.integer(sum(phy$branch.abun==1))
+  res[7,1] <-  as.integer(sum(phy$branch.abun==2))
   res[8,1] <- sum(phy$branch.length[phy$branch.abun==1])
   res[9,1] <- sum(phy$branch.length[phy$branch.abun==2])
-  res[10,1] <- nrow(phy)%>%as.integer()
+  res[10,1] <- as.integer(nrow(phy))
   res[11,1] <- sum(phy$branch.length*phy$branch.abun)/sum(data)
 
   res = res%>%t()%>%as.data.frame()
@@ -590,19 +589,19 @@ datainf <- function(data, datatype){
   res[1,1] <- as.integer(sum(data))
   # res[2,1] <-  sum(ncol(data),nrow(data))
   if("matrix" %in% class(data) | "data.frame" %in% class(data)){
-    res[2,1] <-  sum(rowSums(data)>0)%>%as.integer()
-    res[3,1] <-  sum(colSums(data)>0)%>%as.integer() 
+    res[2,1] <-  as.integer(sum(rowSums(data)>0))
+    res[3,1] <-  as.integer(sum(colSums(data)>0)) 
   }else{
-    res[2,1] <-  nrow(data[rowSums(data)>0])%>%as.integer()
-    res[3,1] <-  ncol(data[colSums(data)>0])%>%as.integer() 
+    res[2,1] <-  as.integer(nrow(data[rowSums(data)>0]))
+    res[3,1] <-  as.integer(ncol(data[colSums(data)>0]))
   }
-  res[4,1] <-  sum(data>0)%>%as.integer()
+  res[4,1] <-  as.integer(sum(data>0))
   res[5,1] <-  round(sum(data>0)/ncol(data)/nrow(data),4)
   res[7:16,1] <- c(sum(data==1),sum(data==2),sum(data==3),sum(data==4),sum(data==5),
                    sum(data==6),sum(data==7),sum(data==8),sum(data==9),sum(data==10))%>%as.integer()
-  f1 = sum(data==1)%>%as.integer()
-  f2 = sum(data==2)%>%as.integer()
-  n = sum(data)%>%as.integer()
+  f1 = as.integer(sum(data==1))
+  f2 = as.integer(sum(data==2))
+  n = as.integer(sum(data))
   
   f0.hat <- ifelse(f2 == 0, (n - 1)/n * f1 * (f1 - 1)/2, 
                    (n - 1)/n * f1^2/2/f2)
