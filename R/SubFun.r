@@ -1096,6 +1096,7 @@ get.netphydiv_iNE <- function(data,q,B,row.tree = NULL,col.tree = NULL,conf, kno
   return(out1)
 }
 
+
 iNEXTbeta.PDlink <- function(data, level, datatype='abundance', q = c(0, 1, 2),
                              nboot = 20, conf = 0.95,
                              row.tree = NULL,col.tree = NULL, PDtype){
@@ -3726,6 +3727,174 @@ MakeTable_Empericalprofile = function(data, B, q, conf){
 }
 
 
+Evenness.profile_asym <- function(x, q, datatype = c("abundance","incidence_freq"), method, E.class) {
+  
+  estqD = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', q, datatype, nboot = 0) |> filter(Method == "Asymptotic")
+  estS = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', 0, datatype, nboot = 0) |> filter(Method == "Asymptotic")
+  
+  out = lapply(E.class, function(i) {
+    tmp = sapply(1:length(x), function(k) iNEXT.4steps:::even.class(q, estqD[estqD$Assemblage == names(x)[k], "qTD"], estS[estS$Assemblage == names(x)[k], "qTD"], i, x[[k]]/sum(x[[k]])))
+    if (inherits(tmp, c("numeric","integer"))) {tmp = t(as.matrix(tmp, nrow = 1))}
+    rownames(tmp) = q
+    tmp
+  })
+  
+  names(out) = paste("E", E.class, sep="")
+  return(out)
+}
+
+
+Evenness_asym <- function (data, q = seq(0, 2, 0.2), datatype = "abundance", 
+          nboot = 30, conf = 0.95, nT = NULL, E.class = 1:5){
+  TYPE <- c("abundance", "incidence", "incidence_freq", "incidence_raw")
+  if (is.na(pmatch(datatype, TYPE))) 
+    stop("invalid datatype")
+  if (pmatch(datatype, TYPE) == -1) 
+    stop("ambiguous datatype")
+  datatype <- match.arg(datatype, TYPE)
+  if (!inherits(q, "numeric")) 
+    stop("invalid class of order q, q should be a postive value/vector of numeric object", 
+         call. = FALSE)
+  if (min(q) < 0) {
+    warning("ambigous of order q, we only compute postive q", 
+            call. = FALSE)
+    q <- q[q >= 0]
+  }
+  if (length(nboot) != 1) 
+    stop("Please enter a non-negative integer for nboot.", 
+         call. = FALSE)
+  if ((nboot < 0) | (is.numeric(nboot) == F)) 
+    stop("Please enter a non-negative integer for nboot.", 
+         call. = FALSE)
+  if (length(conf) != 1) 
+    stop("Please enter a value between zero and one for conf.", 
+         call. = FALSE)
+  if ((conf < 0) | (conf > 1) | (is.numeric(conf) == F)) 
+    stop("Please enter a value between zero and one for conf.", 
+         call. = FALSE)
+  if (datatype == "incidence") 
+    stop("Evenness can only accept 'datatype = incidence_raw'.")
+  kind <- c("Estimated", "Observed")
+  if (length(method) > 1) 
+    stop("only one calculation method")
+  if (is.na(pmatch(method, kind))) 
+    stop("invalid method")
+  if (pmatch(method, kind) == -1) 
+    stop("ambiguous method")
+  class <- c(1:5)
+  if (sum(E.class %in% class) != length(E.class)) 
+    stop("invalid E.class")
+  if (datatype == "incidence_raw") {
+    if (length(data) != 1) {
+      data = iNEXT.3D:::as.incfreq(data, nT = nT)
+      datatype = "incidence_freq"
+    }
+    if (length(data) == 1) {
+      name = names(data)
+      data = list(iNEXT.3D:::as.incfreq(data, nT = nT))
+      names(data) = name
+      datatype = "incidence_freq"
+    }
+  }
+  if (inherits(data, c("numeric", "integer"))) {
+    data <- list(Assemblage_1 = data)
+  }
+  if (inherits(data, c("data.frame", "matrix"))) {
+    datalist <- lapply(1:ncol(data), function(i) data[, i])
+    if (is.null(colnames(data))) 
+      names(datalist) <- paste0("Assemblage_", 1:ncol(data))
+    else names(datalist) <- colnames(data)
+    data <- datalist
+  }
+  if (inherits(data, "list")) {
+    if (is.null(names(data))) 
+      names(data) = paste0("Assemblage_", 1:length(data))
+  }
+  if (is.null(SC) == TRUE) {
+    if (datatype == "abundance") 
+      SC = sapply(data, function(x) iNEXT.3D:::Coverage(x, 
+                                                        "abundance", 2 * sum(x))) %>% min
+    if (datatype == "incidence_freq") 
+      SC = sapply(data, function(x) iNEXT.3D:::Coverage(x, 
+                                                        "incidence_freq", 2 * x[1])) %>% min
+  }
+  if ((length(SC) != 1) | (SC < 0) | (SC > 1) | (is.numeric(SC) == 
+                                                 F)) 
+    stop("The sample coverage value should be a value between zero and one.", 
+         call. = FALSE)
+  if (datatype == "abundance") {
+    qD <- Evenness.profile_asym(data, q, "abundance", method, 
+                           E.class)
+    qD <- purrr::map(qD, as.vector)
+    if (nboot > 1) {
+      Prob.hat <- lapply(1:length(data), function(i) iNEXT.3D:::EstiBootComm.Ind(data[[i]]))
+      Abun.Mat <- lapply(1:length(data), function(i) rmultinom(nboot, 
+                                                               sum(data[[i]]), Prob.hat[[i]]))
+      error = apply(matrix(sapply(1:nboot, function(b) {
+        dat = lapply(1:length(Abun.Mat), function(j) Abun.Mat[[j]][, 
+                                                                   b])
+        names(dat) = paste("Site", 1:length(dat), sep = "")
+        dat.qD = Evenness.profile_asym(dat, q, "abundance", 
+                                  method, E.class)
+        unlist(dat.qD)
+      }), nrow = length(q) * length(E.class) * length(Abun.Mat)), 
+      1, sd, na.rm = TRUE)
+      error = matrix(error, ncol = length(E.class))
+      se = split(error, col(error))
+    }else {
+      se = lapply(1:length(E.class), function(x) NA)
+    }
+    out <- lapply(1:length(E.class), function(k) {
+      tmp = data.frame(Order.q = rep(q, length(data)), 
+                       Evenness = as.vector(qD[[k]]), s.e. = as.vector(se[[k]]), 
+                       Even.LCL = as.vector(qD[[k]] - qnorm(1 - (1 - 
+                                                                   conf)/2) * se[[k]]), Even.UCL = as.vector(qD[[k]] + 
+                                                                                                               qnorm(1 - (1 - conf)/2) * se[[k]]), Assemblage = rep(names(data), 
+                                                                                                                                                                    each = length(q)), Method = rep("Asymptotic", length(q) * 
+                                                                                                                                                                                                      length(data)))
+      tmp$Even.LCL[tmp$Even.LCL < 0] <- 0
+      tmp
+    })
+  }else if (datatype == "incidence_freq") {
+    qD <- Evenness.profile(data, q, "incidence_freq", method, 
+                           E.class, SC)
+    qD <- map(qD, as.vector)
+    if (nboot > 1) {
+      nT <- lapply(1:length(data), function(i) data[[i]][1])
+      Prob.hat <- lapply(1:length(data), function(i) iNEXT.3D:::EstiBootComm.Sam(data[[i]]))
+      Incid.Mat <- lapply(1:length(data), function(i) t(sapply(Prob.hat[[i]], 
+                                                               function(p) rbinom(nboot, nT[[i]], p))))
+      Incid.Mat <- lapply(1:length(data), function(i) matrix(c(rbind(nT[[i]], 
+                                                                     Incid.Mat[[i]])), ncol = nboot))
+      error = apply(matrix(sapply(1:nboot, function(b) {
+        dat = lapply(1:length(Incid.Mat), function(j) Incid.Mat[[j]][, 
+                                                                     b])
+        names(dat) = paste("Site", 1:length(dat), sep = "")
+        dat.qD = Evenness.profile(dat, q, "incidence_freq", 
+                                  method, E.class, SC)
+        unlist(dat.qD)
+      }), nrow = length(q) * length(E.class) * length(Incid.Mat)), 
+      1, sd, na.rm = TRUE)
+      error = matrix(error, ncol = length(E.class))
+      se = split(error, col(error))
+    }else {
+      se = lapply(1:length(E.class), function(x) NA)
+    }
+    out <- lapply(1:length(E.class), function(k) {
+      tmp = data.frame(Order.q = rep(q, length(data)), 
+                       Evenness = as.vector(qD[[k]]), s.e. = as.vector(se[[k]]), 
+                       Even.LCL = as.vector(qD[[k]] - qnorm(1 - (1 - 
+                                                                   conf)/2) * se[[k]]), Even.UCL = as.vector(qD[[k]] + 
+                                                                                                               qnorm(1 - (1 - conf)/2) * se[[k]]), Assemblage = rep(names(data), 
+                                                                                                                                                                    each = length(q)), Method = rep(method, length(q) * 
+                                                                                                                                                                                                      length(data)))
+      tmp$Even.LCL[tmp$Even.LCL < 0] <- 0
+      tmp
+    })
+  }
+  names(out) = paste("E", E.class, sep = "")
+  return(out)
+}
 # Generate Color Palette for ggplot2
 #
 # This function creates a color palette suitable for ggplot2 visualizations by evenly spacing colors in the HCL color space. The function ensures that the colors are well-distributed and visually distinct, making it ideal for categorical data where each category needs to be represented by a different color.

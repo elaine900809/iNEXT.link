@@ -1762,8 +1762,13 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         
         assemblage = names(data)[[i]]
         sub = data[[i]]
-        res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
-                                     method = method, nboot=0, E.class = e, SC = SC)
+        if(SC == 1){
+          res = Evenness_asym(sub, q = q,datatype = datatype, nboot=0, E.class = e)
+        }else{
+          res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
+                                       method = method, nboot=0, E.class = e, SC = SC)
+        }
+
         wk = colSums(sub)/sum(sub)
         even = sapply(q, function(r){
           tmp = res[[1]] |> filter(Order.q == r)
@@ -1820,11 +1825,11 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         Spec[[i]]$Method <- NULL
       }
     }else{
-      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = as.vector(sapply(SC, function(y) rep(y,length(q))))))
+      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
       for(i in 1:length(E.class)){
         Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
         names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-        names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
+        names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
         Spec[[i]]$Method <- NULL
       }
     }
