@@ -3746,6 +3746,9 @@ Evenness.profile_asym <- function(x, q, datatype = c("abundance","incidence_freq
 
 Evenness_asym <- function (data, q = seq(0, 2, 0.2), datatype = "abundance", 
           nboot = 30, conf = 0.95, nT = NULL, E.class = 1:5){
+  
+  method = "Estimated"
+  
   TYPE <- c("abundance", "incidence", "incidence_freq", "incidence_raw")
   if (is.na(pmatch(datatype, TYPE))) 
     stop("invalid datatype")
