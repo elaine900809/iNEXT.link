@@ -1799,7 +1799,7 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         
         assemblage = names(data)[[i]]
         if(is.null(assemblage)){
-          assemblage = "Network1"
+          assemblage = paste0("Network",i)
         }
         sub = data[[i]]
         if(SC == 1){
