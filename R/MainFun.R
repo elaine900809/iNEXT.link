@@ -50,42 +50,52 @@
 DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NULL, row.distM = NULL, col.distM = NULL){
 
   datatype = "abundance"
-  # data_new <- list()
-  # for(i in 1:length(data)){
-  #   if(nrow(data[[i]]) > ncol(data[[i]])){
-  #     data_new[[i]] <- as.data.frame(t(data[[i]]))
-  #     names(data_new)[i] <- names(data)[i]
-  #   }else{
-  #     data_new[[i]] <- data[[i]]
-  #     names(data_new)[i] <- names(data)[i]
-  #   }
-  # }
   
   data_new = data
   
-  # row.tree = row.tree
-  # col.tree = col.tree
-  # row.distM = row.distM
-  # col.distM = col.distM
+  row.tree = row.tree
+  col.tree = col.tree
+  row.distM = row.distM
+  col.distM = col.distM
   
+  # if(class(data == list)){
+  #   if(names(data[[1]])[1] == names(data_new[[1]])[1]){
+  #     row.tree = row.tree
+  #     col.tree = col.tree
+  #     row.distM = row.distM
+  #     col.distM = col.distM
+  #   }else{
+  #     #change tree
+  #     rowtree = row.tree
+  #     coltree = col.tree
+  #     row.tree = coltree
+  #     col.tree = rowtree
+  #     #change distM
+  #     rowdistM = row.distM
+  #     coldistM = col.distM
+  #     row.distM = coldistM
+  #     col.distM = rowdistM
+  #   }
+  # }else{
+  #   if(colnames(data)[1] == colnames(data_new)[1]){
+  #     row.tree = row.tree
+  #     col.tree = col.tree
+  #     row.distM = row.distM
+  #     col.distM = col.distM
+  #   }else{
+  #     #change tree
+  #     rowtree = row.tree
+  #     coltree = col.tree
+  #     row.tree = coltree
+  #     col.tree = rowtree
+  #     #change distM
+  #     rowdistM = row.distM
+  #     coldistM = col.distM
+  #     row.distM = coldistM
+  #     col.distM = rowdistM
+  #   }
+  # }
   
-  if(names(data[[1]])[1] == names(data_new[[1]])[1]){
-    row.tree = row.tree
-    col.tree = col.tree
-    row.distM = row.distM
-    col.distM = col.distM
-  }else{
-    #change tree
-    rowtree = row.tree
-    coltree = col.tree
-    row.tree = coltree
-    col.tree = rowtree
-    #change distM
-    rowdistM = row.distM
-    coldistM = col.distM
-    row.distM = coldistM
-    col.distM = rowdistM
-  }
   
   if(diversity == 'PD'){
 
