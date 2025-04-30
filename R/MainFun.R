@@ -1802,7 +1802,10 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
           assemblage = paste0("Network",i)
         }
         sub = data[[i]]
-        if(SC == 1){
+        if(method == "Observed"){
+          res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
+                                       method = method, nboot=0, E.class = e)
+        }else if(SC == 1){
           res = Evenness_asym(sub, q = q,datatype = datatype, nboot=0, E.class = e)
         }else{
           res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
@@ -1845,11 +1848,17 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         
         tmp = qnorm(1 - (1 - conf)/2)
         
-        res = cbind('Specialization' = 1-even,se)  %>% 
-          mutate(Network = assemblage, Method = method ,Order.q = q, SC = SC,
-                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
-          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","SC","Network","class","decomposition"))
-        
+        if(method == "Observed"){
+          res = cbind('Specialization' = 1-even,se)  %>% 
+            mutate(Network = assemblage, Method = method ,Order.q = q,
+                   "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
+            select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","Network","class","decomposition"))
+        }else{
+          res = cbind('Specialization' = 1-even,se)  %>% 
+            mutate(Network = assemblage, Method = method ,Order.q = q, SC = SC,
+                   "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
+            select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","SC","Network","class","decomposition"))
+        }
         return(res)
       })%>%do.call("rbind",.)
     })
@@ -1865,11 +1874,11 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         Spec[[i]]$Method <- NULL
       }
     }else{
-      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
+      # Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
       for(i in 1:length(E.class)){
         Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
         names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-        names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
+        names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
         Spec[[i]]$Method <- NULL
       }
     }
