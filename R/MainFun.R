@@ -111,7 +111,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
     }else{
       table <- datainfphy(data = data_new, datatype = datatype,
                           row.tree = row.tree,col.tree = col.tree)
-      rownames(table) <- "Assemblage1"
+      rownames(table) <- "Network1"
       table = tibble::rownames_to_column(table, var = "Networks")
     }
     
@@ -1798,6 +1798,9 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
       each_class = lapply(1:length(data), function(i){
         
         assemblage = names(data)[[i]]
+        if(is.null(assemblage)){
+          assemblage = "Network1"
+        }
         sub = data[[i]]
         if(SC == 1){
           res = Evenness_asym(sub, q = q,datatype = datatype, nboot=0, E.class = e)
