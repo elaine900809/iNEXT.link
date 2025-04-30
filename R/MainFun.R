@@ -101,34 +101,56 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
 
     if(!is.null(row.tree)){row.tree$tip.label = gsub('\\.', '_',row.tree$tip.label)}
     if(!is.null(col.tree)){col.tree$tip.label = gsub('\\.', '_',col.tree$tip.label)}
-
-    table <- lapply(data_new, function(y){datainfphy(data = y, datatype = datatype,
-                                                 row.tree = row.tree,col.tree = col.tree)})%>%
-      do.call(rbind,.)
-    rownames(table) <- names(data_new)
-    table = tibble::rownames_to_column(table, var = "Networks")
-  }else if(diversity == 'TD'){
-    table <- lapply(data_new, function(y){datainf(data = y, datatype = datatype)})%>%do.call(rbind,.)
-    rownames(table) <- names(data_new)
-    table = tibble::rownames_to_column(table, var = "Networks")
-  }else if(diversity == 'FD'){
-
-
-    table <- lapply(data_new, function(y){datainffun(data = y, datatype = datatype,
-                                                 row.distM = row.distM,col.distM = col.distM)})%>%
-      do.call(rbind,.)
-    rownames(table) <- names(data_new)
-    table = tibble::rownames_to_column(table, var = "Networks")
-  }
-  for(i in 1:length(data)){
-    if(dim(data_new[[i]])[1] == dim(data[[i]])[1] & dim(data_new[[i]])[2] == dim(data[[i]])[2]){
-      table[i,] <- table[i,]
+    
+    if(class(data_new) == "list"){
+      table <- lapply(data_new, function(y){datainfphy(data = y, datatype = datatype,
+                                                       row.tree = row.tree,col.tree = col.tree)})%>%
+        do.call(rbind,.)
+      rownames(table) <- names(data_new)
+      table = tibble::rownames_to_column(table, var = "Networks")
     }else{
-      temp <- c(table[i,3], table[i,4])
-      table[i,3] <- temp[2]
-      table[i,4] <- temp[1]
+      table <- datainfphy(data = data_new, datatype = datatype,
+                          row.tree = row.tree,col.tree = col.tree)
+      rownames(table) <- "Assemblage1"
+      table = tibble::rownames_to_column(table, var = "Networks")
     }
+    
+  }else if(diversity == 'TD'){
+    if(class(data_new) == "list"){
+      table <- lapply(data_new, function(y){datainf(data = y, datatype = datatype)})%>%do.call(rbind,.)
+      rownames(table) <- names(data_new)
+      table = tibble::rownames_to_column(table, var = "Networks")
+    }else{
+      table <- datainf(data = data_new, datatype = datatype)
+      rownames(table) <- "Assemblage1"
+      table = tibble::rownames_to_column(table, var = "Networks")
+    }
+  }else if(diversity == 'FD'){
+    
+    if(class(data_new) == "list"){
+      table <-table <- lapply(data_new, function(y){datainffun(data = y, datatype = datatype,
+                                                               row.distM = row.distM,col.distM = col.distM)})%>%
+        do.call(rbind,.)
+      rownames(table) <- names(data_new)
+      table = tibble::rownames_to_column(table, var = "Networks")
+    }else{
+      table <- datainffun(data = data_new, datatype = datatype,
+                          row.distM = row.distM,col.distM = col.distM)
+      rownames(table) <- "Assemblage1"
+      table = tibble::rownames_to_column(table, var = "Networks")
+    }
+
+    
   }
+  # for(i in 1:length(data)){
+  #   if(dim(data_new[[i]])[1] == dim(data[[i]])[1] & dim(data_new[[i]])[2] == dim(data[[i]])[2]){
+  #     table[i,] <- table[i,]
+  #   }else{
+  #     temp <- c(table[i,3], table[i,4])
+  #     table[i,3] <- temp[2]
+  #     table[i,4] <- temp[1]
+  #   }
+  # }
   return(table)
 
 }
