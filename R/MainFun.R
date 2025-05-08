@@ -1742,7 +1742,6 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param E.class an integer vector between 1 to 5.
-#' @param SC a standardized coverage for calculating specialization index. It is used when \code{method = 'Estimated'}. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).
 #' @param decomposition decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
 #' @return A list of several tables containing estimated (or observed) evenness with order q.\cr
 #'         Each tables represents a class of specialization.
@@ -1750,16 +1749,15 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #'         \item{Specialization}{the specialization of order q.}
 #'         \item{s.e.}{standard error of evenness.}
 #'         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
-#'         \item{Method}{\code{"Estimated"} or \code{"Observed"}.}
-#'         \item{SC}{the target standardized coverage value. (only when \code{method = "Estimated"})}
+#'         \item{Method}{\code{"Asymptotic"} or \code{"Observed"}.}
 #'         \item{Dataset}{the Dataset name.}
-#'         \item{class}{specialization class.}
+#'         \item{Measure}{specialization class.}
 #'         \item{decomposition}{decomposition type.}
 #'         
 #'
 #' @examples
 #' data(beetles)
-#' output_spec = Spec.link(beetles)
+#' output_spec = Spec.link.ObsAsy(beetles)
 #' output_spec
 #' @export
 #' 
@@ -1769,11 +1767,10 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 # Spec.link(data_polination_plant,q = c(1,2),SC = 1, nboot = 0)
 
 Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
-                          nboot = 30,
                           method = "Asymptotic",
+                          nboot = 30,
                           conf = 0.95,
-                          E.class = c(1:5),
-                          SC = NULL, decomposition = "relative"){
+                          E.class = c(1:5), decomposition = "relative"){
   
   datatype = "abundance"
   diversity = 'TD'
@@ -1903,10 +1900,9 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
 }
 
 # Spec.link.est -------------------------------------------------------------------
-#' Standardized estimation (or observed) of specialization with order q
+#' Standardized estimation of specialization with order q
 #' @param data a \code{list} of \code{data.frames}, each \code{data.frames} represents col.species-by-row.species abundance matrix.
 #' @param q a numerical vector specifying the diversity orders. Default is \code{seq(0, 2, 0.2)}.
-#' @param method a binary calculation method with \code{"Estimated"} or \code{"Observed"}.
 #' @param nboot a positive integer specifying the number of bootstrap replications when assessing
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
@@ -1919,10 +1915,9 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
 #'         \item{Specialization}{the specialization of order q.}
 #'         \item{s.e.}{standard error of evenness.}
 #'         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
-#'         \item{Method}{\code{"Estimated"} or \code{"Observed"}.}
 #'         \item{SC}{the target standardized coverage value. (only when \code{method = "Estimated"})}
 #'         \item{Dataset}{the Dataset name.}
-#'         \item{class}{specialization class.}
+#'         \item{Measure}{specialization class.}
 #'         \item{decomposition}{decomposition type.}
 #'         
 #'
@@ -2019,22 +2014,12 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
     
     names(Spec) = paste0("1 - E",E.class)
     
-    if (method == "Estimated") {
-      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
-      for(i in 1:length(E.class)){
-        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
-        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-        names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
-        Spec[[i]]$Method <- NULL
-      }
-    }else{
-      # Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
-      for(i in 1:length(E.class)){
-        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
-        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-        names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
-        Spec[[i]]$Method <- NULL
-      }
+    Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
+    for(i in 1:length(E.class)){
+      Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
+      names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
+      names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
+      Spec[[i]]$Method <- NULL
     }
     
   }else if(decomposition == "absolute"){
