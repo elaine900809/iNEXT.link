@@ -1734,10 +1734,10 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 
 
 # Spec.link.ObsAsy  -------------------------------------------------------------------
-#' Asymtotic estimation (or observed) of specialization with order q
+#' Asymptotic estimation (or observed) of specialization with order q
 #' @param data a \code{list} of \code{data.frames}, each \code{data.frames} represents col.species-by-row.species abundance matrix.
 #' @param q a numerical vector specifying the diversity orders. Default is \code{seq(0, 2, 0.2)}.
-#' @param method a binary calculation method with \code{"Estimated"} or \code{"Observed"}.
+#' @param method a binary calculation method with \code{"Asymptotic"} or \code{"Observed"}.
 #' @param nboot a positive integer specifying the number of bootstrap replications when assessing
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
@@ -1923,7 +1923,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
 #'
 #' @examples
 #' data(beetles)
-#' output_spec = Spec.link(beetles)
+#' output_spec = Spec.link.est(beetles)
 #' output_spec
 #' @export
 #' 
