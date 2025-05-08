@@ -1733,8 +1733,8 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 }
 
 
-# Spec.link -------------------------------------------------------------------
-#' Standardized estimation (or observed) of specialization with order q
+# Spec.link.ObsAsy  -------------------------------------------------------------------
+#' Asymtotic estimation (or observed) of specialization with order q
 #' @param data a \code{list} of \code{data.frames}, each \code{data.frames} represents col.species-by-row.species abundance matrix.
 #' @param q a numerical vector specifying the diversity orders. Default is \code{seq(0, 2, 0.2)}.
 #' @param method a binary calculation method with \code{"Estimated"} or \code{"Observed"}.
@@ -1768,29 +1768,20 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 # data = data_polination_plant
 # Spec.link(data_polination_plant,q = c(1,2),SC = 1, nboot = 0)
 
-Spec.link <- function(data, q = seq(0, 2, 0.2),
-                      method = "Estimated",
-                      nboot = 30,
-                      conf = 0.95,
-                      E.class = c(1:5),
-                      SC = NULL, decomposition = "relative"){
+Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
+                          nboot = 30,
+                          method = "Asymptotic",
+                          conf = 0.95,
+                          E.class = c(1:5),
+                          SC = NULL, decomposition = "relative"){
   
   datatype = "abundance"
   diversity = 'TD'
   
-  # data = lapply(data, function(x){data.frame(t(x))})
-  
   long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
+  if ( !(method %in% c("Asymptotic", "Observed")) )
+    stop("Please select one of below method: 'Asymptotic', 'Observed'", call. = FALSE)
   
-  if(method == "Estimated"){
-    if (is.null(SC)) SC = sapply(long, function(x) iNEXT.3D:::Coverage(x, datatype = 'abundance', 2 * sum(x))) %>% min
-  }else{
-    if(is.null(SC)){
-      SC = DataInfo.link(data, diversity="TD")$Coverage
-    }else{
-      SC =SC  
-    }
-  }
   
   if(decomposition == "relative"){
     
@@ -1805,12 +1796,181 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         if(method == "Observed"){
           res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
                                        method = method, nboot=0, E.class = e)
-        }else if(SC == 1){
+        }else if(method == "Asymptotic"){
           res = Evenness_asym(sub, q = q,datatype = datatype, nboot=0, E.class = e)
-        }else{
-          res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
-                                       method = method, nboot=0, E.class = e, SC = SC)
         }
+        
+        wk = colSums(sub)/sum(sub)
+        even = sapply(q, function(r){
+          tmp = res[[1]] |> filter(Order.q == r)
+          return(sum(tmp$Evenness*wk))
+        })
+        
+        if(nboot > 1){
+          
+          se = do.call(rbind,future_lapply(1:nboot, function(i){
+            
+            bootstrap_population = iNEXT.beta3D:::bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
+            bootstrap_sample = sapply(1:ncol(sub), function(k) rmultinom(n = 1, size = sum(sub[,k]), prob = bootstrap_population[,k]))
+            
+            res_boost = iNEXT.4steps::Evenness(bootstrap_sample, q = q,datatype = datatype,
+                                               method = method, nboot=0, E.class = e, SC = SC)
+            wk = colSums(bootstrap_sample)/sum(bootstrap_sample)
+            even_boost = sapply(q, function(r){
+              tmp = res_boost[[1]] |> filter(Order.q == r)
+              return(sum(tmp$Evenness*wk))
+            }) 
+            
+            even_boost
+            return(even_boost)
+          }, future.seed = TRUE)) %>% apply(2,sd) %>% as.data.frame()
+          
+          colnames(se) = c("s.e.")
+          
+        }else{
+          
+          se = matrix(NA, ncol = 1, nrow = length(even)) %>% as.data.frame()
+          colnames(se) = c("s.e.")
+          
+        }
+        
+        tmp = qnorm(1 - (1 - conf)/2)
+        
+        res = cbind('Specialization' = 1-even,se)  %>% 
+          mutate(Network = assemblage, Method = method ,Order.q = q,
+                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
+          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","Network","class","decomposition"))
+        
+        return(res)
+      })%>%do.call("rbind",.)
+    })
+    
+    names(Spec) = paste0("1 - E",E.class)
+    
+    for(i in 1:length(E.class)){
+      Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
+      names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
+    }
+    
+  }else if(decomposition == "absolute"){
+
+    
+    long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
+    
+    Spec <- lapply(E.class, function(e){
+      each_class = lapply(seq_along(long), function(i){
+        res = iNEXT.4steps::Evenness(long[[i]], q = q,datatype = datatype,
+                                     method = method, nboot=nboot, E.class = e, SC = SC)
+        res['Coverage'] = NULL
+        res = lapply(res, function(each_class){
+          each_class%>%
+            mutate(Evenness = 1-Evenness, Even.LCL = 1-Even.LCL, Even.UCL = 1-Even.UCL) %>% 
+            select(-Assemblage)%>%
+            rename('Specialization'='Evenness', 'Spec.UCL' ='Even.LCL', 'Spec.LCL' ='Even.UCL')%>%
+            mutate(Network = names(long)[[i]],class = paste0("1 - E",e), decomposition = "absolute")
+        })
+        # if(method == "Observed") index = 1
+        # if(method == "Estimated") index = 2
+        # return(res[[index]]%>%mutate(Assemblage = names(long)[[i]]))
+        return(res[[1]])
+      }) %>% do.call("rbind",.)
+      
+      # each_class %>% mutate(class = paste0("1 - E",e))
+    })
+    names(Spec) = paste0("1 - E",E.class)
+    
+    if (method == "Estimated") {
+      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
+      for(i in 1:length(E.class)){
+        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
+        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
+        names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
+        Spec[[i]]$Method <- NULL
+      }
+    }else{
+      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = as.vector(sapply(SC, function(y) rep(y,length(q))))))
+      for(i in 1:length(E.class)){
+        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
+        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
+        names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
+        Spec[[i]]$Method <- NULL
+      }
+    }
+  }
+  
+  return(Spec)
+  
+}
+
+# Spec.link.est -------------------------------------------------------------------
+#' Standardized estimation (or observed) of specialization with order q
+#' @param data a \code{list} of \code{data.frames}, each \code{data.frames} represents col.species-by-row.species abundance matrix.
+#' @param q a numerical vector specifying the diversity orders. Default is \code{seq(0, 2, 0.2)}.
+#' @param method a binary calculation method with \code{"Estimated"} or \code{"Observed"}.
+#' @param nboot a positive integer specifying the number of bootstrap replications when assessing
+#' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
+#' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
+#' @param E.class an integer vector between 1 to 5.
+#' @param SC a standardized coverage for calculating specialization index. It is used when \code{method = 'Estimated'}. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).
+#' @param decomposition decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
+#' @return A list of several tables containing estimated (or observed) evenness with order q.\cr
+#'         Each tables represents a class of specialization.
+#'         \item{Order.q}{the network diversity order of q.}
+#'         \item{Specialization}{the specialization of order q.}
+#'         \item{s.e.}{standard error of evenness.}
+#'         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
+#'         \item{Method}{\code{"Estimated"} or \code{"Observed"}.}
+#'         \item{SC}{the target standardized coverage value. (only when \code{method = "Estimated"})}
+#'         \item{Dataset}{the Dataset name.}
+#'         \item{class}{specialization class.}
+#'         \item{decomposition}{decomposition type.}
+#'         
+#'
+#' @examples
+#' data(beetles)
+#' output_spec = Spec.link(beetles)
+#' output_spec
+#' @export
+#' 
+
+
+Spec.link.est <- function(data, q = seq(0, 2, 0.2),
+                      nboot = 30,
+                      conf = 0.95,
+                      E.class = c(1:5),
+                      SC = NULL, decomposition = "relative"){
+  
+  method = "Estimated"
+  datatype = "abundance"
+  diversity = 'TD'
+  
+  # data = lapply(data, function(x){data.frame(t(x))})
+  
+  long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
+  
+  if(method == "Estimated"){
+    if (is.null(SC)) SC = sapply(long, function(x) iNEXT.3D:::Coverage(x, datatype = 'abundance', 2 * sum(x))) %>% min
+  }else{
+    if(is.null(SC)){
+      SC = DataInfo.link(data, diversity="TD")$Coverage
+    }else{
+      SC = SC 
+    }
+  }
+  
+  if(decomposition == "relative"){
+    
+    Spec <- lapply(E.class, function(e){
+      each_class = lapply(1:length(data), function(i){
+        
+        assemblage = names(data)[[i]]
+        if(is.null(assemblage)){
+          assemblage = paste0("Network",i)
+        }
+        sub = data[[i]]
+        
+        res = iNEXT.4steps::Evenness(sub, q = q,datatype = datatype,
+                                     method = method, nboot=0, E.class = e, SC = SC)
 
         wk = colSums(sub)/sum(sub)
         even = sapply(q, function(r){
@@ -1848,17 +2008,11 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
         
         tmp = qnorm(1 - (1 - conf)/2)
         
-        if(method == "Observed"){
-          res = cbind('Specialization' = 1-even,se)  %>% 
-            mutate(Network = assemblage, Method = method ,Order.q = q,
-                   "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
-            select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","Network","class","decomposition"))
-        }else{
-          res = cbind('Specialization' = 1-even,se)  %>% 
-            mutate(Network = assemblage, Method = method ,Order.q = q, SC = SC,
-                   "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
-            select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","SC","Network","class","decomposition"))
-        }
+        res = cbind('Specialization' = 1-even,se)  %>% 
+          mutate(Network = assemblage, Method = method ,Order.q = q, SC = SC,
+                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
+          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","SC","Network","class","decomposition"))
+        
         return(res)
       })%>%do.call("rbind",.)
     })
@@ -1939,6 +2093,7 @@ Spec.link <- function(data, q = seq(0, 2, 0.2),
   return(Spec)
     
 }
+
 
 # ggSpec.link -------------------------------------------------------------------
 #' ggplot for Specialization ggSpec.link The figure for estimation of Specialization with order q

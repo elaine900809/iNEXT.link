@@ -3729,8 +3729,8 @@ MakeTable_Empericalprofile = function(data, B, q, conf){
 
 Evenness.profile_asym <- function(x, q, datatype = c("abundance","incidence_freq"), E.class) {
   
-  estqD = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', q, datatype, nboot = 0) |> filter(Method == "Asymptotic")
-  estS = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', 0, datatype, nboot = 0) |> filter(Method == "Asymptotic")
+  estqD_asym = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', q, datatype, nboot = 0) |> filter(Method == "Asymptotic")
+  estS_asym = iNEXT.3D::ObsAsy3D(x, diversity = 'TD', 0, datatype, nboot = 0) |> filter(Method == "Asymptotic")
   
   out = lapply(E.class, function(i) {
     tmp = sapply(1:length(x), function(k) iNEXT.4steps:::even.class(q, estqD[estqD$Assemblage == names(x)[k], "qTD"], estS[estS$Assemblage == names(x)[k], "qTD"], i, x[[k]]/sum(x[[k]])))
