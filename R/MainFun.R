@@ -969,18 +969,16 @@ ggObsAsy.link <- function(output){
 #'
 #' @examples
 #' \donttest{
-#' # Taxonomic network diversity for interaction data with two target coverages (93% and 97%)
+#' # Taxonomic network diversity for interaction data with two target coverages(93% and 97%)
 #' data(beetles_plotA)
 #' output_est_qiTD <- estimateD.link(beetles_plotA, diversity = 'TD', q = c(0,1,2),
 #'                                   base = "coverage", level = c(0.93, 0.97))
-#' output_est_qiTD
 #' 
-#' # Phylogenetic network diversity for interaction data with two target sizes (1500 and 3000) “‰’µ“Û•Ð
+#' # Phylogenetic network diversity for interaction data with two target sizes (1500 and 3000) ?????Û•?
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
 #' output_est_qiPD <- estimateD.link(beetles_plotA, diversity = 'PD', 
 #'                                   base = "size", level = c(1500, 3000), row.tree = beetles_row_tree)
-#' output_est_qiPD
 #' 
 #' ## Functional network diversity for interaction data with two target coverages (93% and 97%)
 #' data(beetles_plotA)
@@ -988,11 +986,12 @@ ggObsAsy.link <- function(output){
 #' output_est_qiFD = estimateD.link(data = beetles_plotA, diversity = 'FD', q = c(0, 1, 2),
 #'                                  base = "coverage", level = c(0.93, 0.97), nboot = 10,
 #'                                  row.distM = beetles_row_distM, FDtype = "AUC")
-#' output_est_qiFD
 #'
 #' 
 #' }
 #' @export
+
+
 estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "coverage",
                           level = NULL, nboot = 50, conf = 0.95, 
                           row.tree = NULL, col.tree = NULL, PDtype = 'meanPD', 
@@ -1761,10 +1760,6 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #' output_spec
 #' @export
 #' 
-
-# load("C:/Users/stat_835/Desktop/learning/¦M”Ñ›P/network/network_thsis/network_thesis/data/data_polination_plant.rda")
-# data = data_polination_plant
-# Spec.link(data_polination_plant,q = c(1,2),SC = 1, nboot = 0)
 
 Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
                           method = "Asymptotic",

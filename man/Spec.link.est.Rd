@@ -10,7 +10,8 @@ Spec.link.est(
   nboot = 30,
   conf = 0.95,
   E.class = c(1:5),
-  SC = NULL
+  SC = NULL,
+  decomposition = "relative"
 )
 }
 \arguments{
@@ -26,22 +27,19 @@ sampling uncertainty and constructing confidence intervals. Bootstrap replicatio
 \item{E.class}{an integer vector between 1 to 5.}
 
 \item{SC}{a standardized coverage for calculating specialization index. It is used when \code{method = 'Estimated'}. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).}
-}
 
-\item{decomposition}{
-decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
+\item{decomposition}{decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.}
 }
-
 \value{
 A list of several tables containing estimated (or observed) evenness with order q.\cr
         Each tables represents a class of specialization.
-        \item{Order.q}{the diversity order of q.}
+        \item{Order.q}{the network diversity order of q.}
         \item{Specialization}{the specialization of order q.}
         \item{s.e.}{standard error of evenness.}
         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
         \item{SC}{the target standardized coverage value. (only when \code{method = "Estimated"})}
-        \item{Dataset}{the network name.}
-        \item{class}{specialization class.}
+        \item{Dataset}{the Dataset name.}
+        \item{Measure}{specialization class.}
         \item{decomposition}{decomposition type.}
 }
 \description{
@@ -49,6 +47,6 @@ Standardized estimation of specialization with order q
 }
 \examples{
 data(beetles)
-output = Spec.link.est(beetles)
-output
+output_spec = Spec.link.est(beetles)
+output_spec
 }

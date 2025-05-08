@@ -611,7 +611,7 @@ datainf <- function(data, datatype){
   res = res%>%t()%>%as.data.frame()
   return(res)
 }
-plot.tree2 <- function(mat){
+plot_tree2 <- function(mat){
   #number of lower level must be large than or equal to the number of higher level
   t <- apply(mat,MARGIN = 1, function(x) length(unique(x)))
   if(sum((t[-1]-t[-length(t)])<0)>0) stop("number of lower level must be large than or equal to the number of higher level, please renew your structure matrix.")
