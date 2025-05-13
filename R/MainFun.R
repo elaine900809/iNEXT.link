@@ -1821,7 +1821,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
           
         }else{
           
-          se = matrix(NA, ncol = 1, nrow = length(even)) %>% as.data.frame()
+          se = matrix(NA, ncol = 1, nrow = length(even))  %>%  as.data.frame()
           colnames(se) = c("s.e.")
           
         }
@@ -1851,8 +1851,12 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
     
     Spec <- lapply(E.class, function(e){
       each_class = lapply(seq_along(long), function(i){
-        res = iNEXT.4steps::Evenness(long[[i]], q = q,datatype = datatype,
-                                     method = method, nboot=nboot, E.class = e, SC = SC)
+        if(method == "Observed"){
+          res = iNEXT.4steps::Evenness(long[[i]], q = q,datatype = datatype,
+                                       method = method, nboot=nboot, E.class = e)
+        }else if(method == "Asymptotic"){
+          res = Evenness_asym(long[[i]], q = q,datatype = datatype, nboot=nboot, E.class = e)
+        }
         res['Coverage'] = NULL
         res = lapply(res, function(each_class){
           each_class%>%
@@ -1871,22 +1875,10 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
     })
     names(Spec) = paste0("1 - E",E.class)
     
-    if (method == "Estimated") {
-      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
-      for(i in 1:length(E.class)){
-        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
-        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-        names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
-        Spec[[i]]$Method <- NULL
-      }
-    }else{
-      Spec <- lapply(Spec, function(x) x %>% mutate('SC' = as.vector(sapply(SC, function(y) rep(y,length(q))))))
-      for(i in 1:length(E.class)){
-        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
-        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-        names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
-        Spec[[i]]$Method <- NULL
-      }
+    for(i in 1:length(E.class)){
+      Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
+      names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
+      names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
     }
   }
   
@@ -2019,14 +2011,6 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
     
   }else if(decomposition == "absolute"){
     
-    # for(i in 1:length(data)){
-    #   if(nrow(data[[i]]) > ncol(data[[i]])){
-    #     data[[i]] <- as.data.frame(t(data[[i]]))
-    #   }else{
-    #     data[[i]] <- data[[i]]
-    #   }
-    # }
-    
     long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
     
     Spec <- lapply(E.class, function(e){
@@ -2050,23 +2034,12 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
         # each_class %>% mutate(class = paste0("1 - E",e))
       })
       names(Spec) = paste0("1 - E",E.class)
-      
-      if (method == "Estimated") {
-        Spec <- lapply(Spec, function(x) x %>% mutate('SC' = SC))
-        for(i in 1:length(E.class)){
-          Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
-          names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-          names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
-          Spec[[i]]$Method <- NULL
-        }
-      }else{
-        Spec <- lapply(Spec, function(x) x %>% mutate('SC' = as.vector(sapply(SC, function(y) rep(y,length(q))))))
-        for(i in 1:length(E.class)){
-          Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
-          names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
-          names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
-          Spec[[i]]$Method <- NULL
-        }
+    
+      for(i in 1:length(E.class)){
+        Spec[[i]][,4:5] <- Spec[[i]][,c(5,4)]
+        names(Spec[[i]])[4:5] <- c("Spec.LCL", "Spec.UCL")
+        names(Spec[[i]])[8:9] <- c("Dataset", "Measure")
+        Spec[[i]]$Method <- NULL
       }
   }
   
