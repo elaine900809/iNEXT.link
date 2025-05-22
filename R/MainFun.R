@@ -1798,6 +1798,15 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
   if ( !(decomposition %in% c("relative", "absolute")) )
     stop("Please select one of below decomposition: 'relative', 'absolute'", call. = FALSE)
   
+  if (decomposition == "relative"){
+    index = lapply(data,function(x){
+      sub = apply(x,2,function(i){sum(i!=0)})
+      return(index = sum(sub == 1))
+    })
+    if(sum(unlist(index)) != 0){
+      stop("Under the current setting decomposition = 'relative', cases where a column species interacts with only a single row species cannot be properly computed. Please inspect and preprocess the input list accordingly, or consider using decomposition = 'absolute' instead.", call. = FALSE)
+    }
+  }
   
   if(decomposition == "relative"){
     
