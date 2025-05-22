@@ -37,13 +37,13 @@
 #'
 #' # Functional network diversity for interaction data
 #' data(beetles_plotA)
-#' data(beetles_col_distM)
+#' data(beetles_row_distM)
 #' DataInfo.link(data = beetles_plotA, diversity = 'FD', row.distM = beetles_row_distM)
 #' @export
 #' 
 
-# DataInfo.link(data = lapply(beetles_plotA,function(x){data.frame(t(x))}), diversity = 'PD', row.tree = beetles_col_tree)
-# DataInfo.link(data = beetles_plotA , diversity = 'PD', row.tree = beetles_col_tree)
+# DataInfo.link(data = lapply(beetles_plotA,function(x){data.frame(t(x))}), diversity = 'PD', row.tree = beetles_row_tree)
+# DataInfo.link(data = beetles_plotA , diversity = 'PD', row.tree = beetles_row_tree)
 # DataInfo.link(data = beetles_plotA , diversity = 'FD', row.distM = beetles_row_distM)
 
 
@@ -315,7 +315,8 @@ ggCompleteness.link <- function(output){
 #' 
 #' 
 #' @examples
-#' # Compute standardized estimates of taxonomic network diversity for interaction data with order q = 0, 1, 2
+#' # Compute standardized estimates of taxonomic network diversity for interaction data with
+#' # order q = 0, 1, 2
 #' data(beetles_plotA)
 #' output_qiTD = iNEXT.link(beetles_plotA, diversity = 'TD', q = c(0,1,2), nboot = 30)
 #' output_qiTD$TDInfo   # showing basic data information.
@@ -323,17 +324,21 @@ ggCompleteness.link <- function(output){
 #' output_qiTD$TDAsyEst   # showing asymptotic diversity estimates.
 #'
 #'
-#' # Compute standardized estimates of phylogenetic network diversity for interaction data with order q = 0, 1, 2
+#' # Compute standardized estimates of phylogenetic network diversity for interaction data with
+#' # order q = 0, 1, 2
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
-#' output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20, row.tree = beetles_row_tree)
+#' output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20,
+#'                          row.tree = beetles_row_tree)
 #' output_qiPD
 #'
 #'
-#' # Compute standardized estimates of functional network diversity for interaction data with order q = 0, 1, 2
+#' # Compute standardized estimates of functional network diversity for interaction data with
+#' # order q = 0, 1, 2
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, row.distM = beetles_row_distM, FDtype = "AUC")
+#' output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, 
+#'                          row.distM = beetles_row_distM, FDtype = "AUC")
 #' output_qiFD
 #'
 #' @references
@@ -638,7 +643,8 @@ iNEXT.link <- function(data, diversity = 'TD', q = c(0,1,2), size = NULL,
 #' # for interaction data with order q = 0, 1, 2
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
-#' output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20, row.tree = beetles_row_tree)
+#' output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20, 
+#'                          row.tree = beetles_row_tree)
 #' ggiNEXT.link(output_qiPD, type = c(1, 3))
 #'
 #'
@@ -646,7 +652,8 @@ iNEXT.link <- function(data, diversity = 'TD', q = c(0,1,2), size = NULL,
 #' # for interaction data with order q = 0, 1, 2
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, row.distM = beetles_row_distM, FDtype = "AUC")
+#' output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, 
+#'                          row.distM = beetles_row_distM, FDtype = "AUC")
 #' ggiNEXT.link(output_qiFD)
 #' @export
 
@@ -758,7 +765,8 @@ ggiNEXT.link <- function(output, type = c(1,2,3), facet.var = "Assemblage", colo
 #' # (in increments of 0.2 by default)
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
-#' output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), row.tree = beetles_row_tree)
+#' output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
+#'                                  row.tree = beetles_row_tree)
 #' output_ObsAsy_qiPD
 #'
 #'
@@ -767,12 +775,13 @@ ggiNEXT.link <- function(output, type = c(1,2,3), facet.var = "Assemblage", colo
 #' # (in increments of 0.25 by default)
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
+#' output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), 
+#'                                  row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 #' output_ObsAsy_qiFD
 #' 
 #' @export
 ObsAsy.link <- function(data, diversity = 'TD', q = seq(0, 2, 0.2), nboot = 30, conf = 0.95, method = c("Asymptotic", "Observed"),
-                        row.tree = NULL, col.tree = NULL, PDtype = "meanPD", row.distM = NULL, col.distM = NULL, FDtype = "AUC", FDtau = NULL, decomposition = "relative"){
+                        row.tree = NULL, col.tree = NULL, PDtype = "meanPD", row.distM = NULL, col.distM = NULL, FDtype = "AUC", FDtau = NULL){
   
   datatype = "abundance"
   
@@ -880,7 +889,8 @@ ObsAsy.link <- function(data, diversity = 'TD', q = seq(0, 2, 0.2), nboot = 30, 
 #' # with order q between 0 and 2 (in increments of 0.2 by default).
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
-#' output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), row.tree = beetles_row_tree)
+#' output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
+#'                                  row.tree = beetles_row_tree)
 #' ggObsAsy.link(output_ObsAsy_qiPD)
 #'
 #'
@@ -889,7 +899,8 @@ ObsAsy.link <- function(data, diversity = 'TD', q = seq(0, 2, 0.2), nboot = 30, 
 #' # under tau values from 0 to 1
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
+#' output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), 
+#'                                  row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 #' ggObsAsy.link(output_ObsAsy_qiFD)
 #'
 
@@ -974,7 +985,7 @@ ggObsAsy.link <- function(output){
 #' output_est_qiTD <- estimateD.link(beetles_plotA, diversity = 'TD', q = c(0,1,2),
 #'                                   base = "coverage", level = c(0.93, 0.97))
 #' 
-#' # Phylogenetic network diversity for interaction data with two target sizes (1500 and 3000) ?????ە?
+#' # Phylogenetic network diversity for interaction data with two target sizes (1500 and 3000)
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
 #' output_est_qiPD <- estimateD.link(beetles_plotA, diversity = 'PD', 
@@ -1199,24 +1210,30 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
 #' 
 #' @examples
 #' ## Taxonomic network diversity for interaction data
-#' # Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+#' # Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+#' # related statistics
 #' data(beetles_plotA)
-#' output_beta_qiTD = iNEXTbeta.link(data = beetles_plotA, diversity = 'TD', level = NULL, q = c(0, 1, 2))
+#' output_beta_qiTD = iNEXTbeta.link(data = beetles_plotA, diversity = 'TD', level = NULL, 
+#'                                   q = c(0, 1, 2))
 #' output_beta_qiTD
 #'
 #' ## Phylogenetic network diversity for interaction data
-#' # Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+#' # Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and
+#' # related statistics
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
-#' output_beta_qiPD = iNEXTbeta.link(data = beetles_plotA, diversity = 'PD', level = NULL, q = c(0, 1, 2), row.tree = beetles_row_tree, nboot = 10)
+#' output_beta_qiPD = iNEXTbeta.link(data = beetles_plotA, diversity = 'PD', level = NULL,
+#'                                   q = c(0, 1, 2),row.tree = beetles_row_tree, nboot = 10)
 #' output_beta_qiPD
 #'
 #'
 #' ## Functional network diversity for interaction data
-#' # Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+#' # Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+#' # related statistics
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, q = c(0, 1, 2), row.distM = beetles_row_distM, FDtype = "AUC")
+#' output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, 
+#'                                   q = c(0, 1, 2),row.distM = beetles_row_distM, FDtype = "AUC")
 #' output_beta_qiFD
 #'
 #' @references
@@ -1570,26 +1587,31 @@ iNEXTbeta.link = function(data, diversity = 'TD', level = NULL,
 #' 
 #' @examples
 #' ## Taxonomic network diversity for interaction data
-#' # Plot coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+#' # Plot coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+#' # related statistics
 #' data(beetles_plotA)
 #' output_beta_qiTD = iNEXTbeta.link(data = beetles_plotA, diversity = 'TD', level = NULL, q = c(0, 1, 2))
 #' ggiNEXTbeta.link(output_beta_qiTD, type = 'B')
 #' ggiNEXTbeta.link(output_beta_qiTD, type = 'D')
 #'
 #' ## Phylogenetic network diversity for interaction data
-#' # Plot coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+#' # Plot coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+#' # related statistics
 #' data(beetles_plotA)
-#' data(beetles_col_tree)
-#' output_beta_qiPD = iNEXTbeta.link(data = beetles_plotA, diversity = 'PD', level = NULL, q = c(0, 1, 2), col.tree = beetles_col_tree, nboot = 10)
+#' data(beetles_row_tree)
+#' output_beta_qiPD = iNEXTbeta.link(data = beetles_plotA, diversity = 'PD', level = NULL, q = c(0, 1, 2),
+#'                                   row.tree = beetles_row_tree, nboot = 10)
 #' ggiNEXTbeta.link(output_beta_qiPD, type = 'B')
 #' ggiNEXTbeta.link(output_beta_qiPD, type = 'D')
 #'
 #'
 #' ## Functional network diversity for interaction data
-#' # Plot coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+#' # Plot coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+#' # related statistics
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, q = c(0, 1, 2), row.distM = beetles_row_distM, FDtype = "AUC")
+#' output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, q = c(0, 1, 2), 
+#'                                   row.distM = beetles_row_distM, FDtype = "AUC")
 #' ggiNEXTbeta.link(output_beta_qiFD, type = 'B')
 #' ggiNEXTbeta.link(output_beta_qiFD, type = 'D')
 #'
@@ -1773,6 +1795,8 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
   long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
   if ( !(method %in% c("Asymptotic", "Observed")) )
     stop("Please select one of below method: 'Asymptotic', 'Observed'", call. = FALSE)
+  if ( !(decomposition %in% c("relative", "absolute")) )
+    stop("Please select one of below decomposition: 'relative', 'absolute'", call. = FALSE)
   
   
   if(decomposition == "relative"){
@@ -1926,7 +1950,18 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
   datatype = "abundance"
   diversity = 'TD'
   
-  # data = lapply(data, function(x){data.frame(t(x))})
+  if ( !(decomposition %in% c("relative", "absolute")) )
+    stop("Please select one of below decomposition: 'relative', 'absolute'", call. = FALSE)
+  
+  if (decomposition == "relative"){
+    index = lapply(data,function(x){
+      sub = apply(x,2,function(i){sum(i!=0)})
+      return(index = sum(sub == 1))
+    })
+    if(sum(unlist(index)) != 0){
+      stop("Under the current setting decomposition = 'relative', cases where a column species interacts with only a single row species cannot be properly computed. Please inspect and preprocess the input list accordingly, or consider using decomposition = 'absolute' instead.", call. = FALSE)
+    }
+  }
   
   long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
   

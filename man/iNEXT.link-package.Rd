@@ -22,28 +22,30 @@ This package contains twelve main functions: \cr\cr
     
 3. \code{estimateD.link}: computes species diversity with a particular user-specified level of sample size or sample coverage.
     
-4. \code{AO.link}: compute asymptotic or empirical(observed) diversity of order q.
+4. \code{ObsAsy.link}: compute asymptotic or empirical(observed) diversity of order q.
 
 5. \code{Completeness.link}: Calculates estimated sample completeness with order q. 
 
-6. \code{Spec.link}: Computes standardized specialization estimation under specified sample coverage(or observed) with order q.
+6. \code{Spec.link.est}: Computes standardized specialization estimation under specified sample coverage with order q.
+
+7. \code{Spec.link.ObsAsy}: Computes observed or asymptotic standardized specialization  with order q.
 
 ** Function for Multi-community **
 
-7. \code{iNEXTbeta.link}: Computing standardized gamma, alpha, beta diversity, and four dissimilarity-turnover indices for three dimensions: taxonomic, phylogenetic and functional diversity at specified sample coverage.
+8. \code{iNEXTbeta.link}: Computing standardized gamma, alpha, beta diversity, and four dissimilarity-turnover indices for three dimensions: taxonomic, phylogenetic and functional diversity at specified sample coverage.
 
 
 ** Functions for Visualizing Results **
 
-8. \code{ggCompleteness.link}: Visualizing the output from the function \code{Completeness.link}
+9. \code{ggCompleteness.link}: Visualizing the output from the function \code{Completeness.link}
 
-9. \code{ggSpec.link}: Visualizing the output from the function \code{Spec.link}
+10. \code{ggSpec.link}: Visualizing the output from the function \code{Spec.link}
 
-10. \code{ggAO.link}: Visualizing the output from the function \code{AO.link}
+11. \code{ggAO.link}: Visualizing the output from the function \code{AO.link}
 
-11. \code{ggiNEXT.link}: Visualizing the output from the function \code{iNEXT.link}
+12. \code{ggiNEXT.link}: Visualizing the output from the function \code{iNEXT.link}
     
-12. \code{ggiNEXTbeta.link}: Visualizing the output from the function \code{iNEXTbeta.link}
+13. \code{ggiNEXTbeta.link}: Visualizing the output from the function \code{iNEXTbeta.link}
 
 
 An Online version of \code{iNEXT.link} is also available for users without an R background: \cr

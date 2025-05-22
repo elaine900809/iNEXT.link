@@ -17,8 +17,7 @@ ObsAsy.link(
   row.distM = NULL,
   col.distM = NULL,
   FDtype = "AUC",
-  FDtau = NULL,
-  decomposition = "relative"
+  FDtau = NULL
 )
 }
 \arguments{
@@ -76,7 +75,8 @@ output_ObsAsy_qiTD
 # (in increments of 0.2 by default)
 data(beetles_plotA)
 data(beetles_row_tree)
-output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), row.tree = beetles_row_tree)
+output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
+                                 row.tree = beetles_row_tree)
 output_ObsAsy_qiPD
 
 
@@ -85,7 +85,8 @@ output_ObsAsy_qiPD
 # (in increments of 0.25 by default)
 data(beetles_plotA)
 data(beetles_row_distM)
-output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
+output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), 
+                                 row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 output_ObsAsy_qiFD
 
 }

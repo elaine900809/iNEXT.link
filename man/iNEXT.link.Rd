@@ -88,7 +88,8 @@ a list of three objects: \cr\cr
 Interpolation (rarefaction) and extrapolation of network diversity
 }
 \examples{
-# Compute standardized estimates of taxonomic network diversity for interaction data with order q = 0, 1, 2
+# Compute standardized estimates of taxonomic network diversity for interaction data with
+# order q = 0, 1, 2
 data(beetles_plotA)
 output_qiTD = iNEXT.link(beetles_plotA, diversity = 'TD', q = c(0,1,2), nboot = 30)
 output_qiTD$TDInfo   # showing basic data information.
@@ -96,17 +97,21 @@ output_qiTD$TDiNextEst   # showing diversity estimates with rarefied and extrapo
 output_qiTD$TDAsyEst   # showing asymptotic diversity estimates.
 
 
-# Compute standardized estimates of phylogenetic network diversity for interaction data with order q = 0, 1, 2
+# Compute standardized estimates of phylogenetic network diversity for interaction data with
+# order q = 0, 1, 2
 data(beetles_plotA)
 data(beetles_row_tree)
-output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20, row.tree = beetles_row_tree)
+output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20,
+                         row.tree = beetles_row_tree)
 output_qiPD
 
 
-# Compute standardized estimates of functional network diversity for interaction data with order q = 0, 1, 2
+# Compute standardized estimates of functional network diversity for interaction data with
+# order q = 0, 1, 2
 data(beetles_plotA)
 data(beetles_row_distM)
-output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, row.distM = beetles_row_distM, FDtype = "AUC")
+output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, 
+                         row.distM = beetles_row_distM, FDtype = "AUC")
 output_qiFD
 
 }

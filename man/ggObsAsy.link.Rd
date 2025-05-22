@@ -27,7 +27,8 @@ ggObsAsy.link(output_ObsAsy_qiTD)
 # with order q between 0 and 2 (in increments of 0.2 by default).
 data(beetles_plotA)
 data(beetles_row_tree)
-output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), row.tree = beetles_row_tree)
+output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
+                                 row.tree = beetles_row_tree)
 ggObsAsy.link(output_ObsAsy_qiPD)
 
 
@@ -36,7 +37,8 @@ ggObsAsy.link(output_ObsAsy_qiPD)
 # under tau values from 0 to 1
 data(beetles_plotA)
 data(beetles_row_distM)
-output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
+output_ObsAsy_qiFD = ObsAsy.link(data = beetles_plotA, diversity = 'FD', q = seq(0, 2, 0.25), 
+                                 row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 ggObsAsy.link(output_ObsAsy_qiFD)
 
 }

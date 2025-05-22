@@ -56,6 +56,6 @@ DataInfo.link(data = beetles_plotA, diversity = 'PD', row.tree = beetles_row_tre
 
 # Functional network diversity for interaction data
 data(beetles_plotA)
-data(beetles_col_distM)
+data(beetles_row_distM)
 DataInfo.link(data = beetles_plotA, diversity = 'FD', row.distM = beetles_row_distM)
 }

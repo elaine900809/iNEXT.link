@@ -74,24 +74,30 @@ Function \code{iNEXTbeta.link} Interpolation and extrapolation of beta diversity
 }
 \examples{
 ## Taxonomic network diversity for interaction data
-# Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+# Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+# related statistics
 data(beetles_plotA)
-output_beta_qiTD = iNEXTbeta.link(data = beetles_plotA, diversity = 'TD', level = NULL, q = c(0, 1, 2))
+output_beta_qiTD = iNEXTbeta.link(data = beetles_plotA, diversity = 'TD', level = NULL, 
+                                  q = c(0, 1, 2))
 output_beta_qiTD
 
 ## Phylogenetic network diversity for interaction data
-# Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+# Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and
+# related statistics
 data(beetles_plotA)
 data(beetles_row_tree)
-output_beta_qiPD = iNEXTbeta.link(data = beetles_plotA, diversity = 'PD', level = NULL, q = c(0, 1, 2), row.tree = beetles_row_tree, nboot = 10)
+output_beta_qiPD = iNEXTbeta.link(data = beetles_plotA, diversity = 'PD', level = NULL,
+                                  q = c(0, 1, 2),row.tree = beetles_row_tree, nboot = 10)
 output_beta_qiPD
 
 
 ## Functional network diversity for interaction data
-# Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and related statistics
+# Coverage-based standardized alpha/beta/gamma/dissimilarity network diversity estimates and 
+# related statistics
 data(beetles_plotA)
 data(beetles_row_distM)
-output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, q = c(0, 1, 2), row.distM = beetles_row_distM, FDtype = "AUC")
+output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, 
+                                  q = c(0, 1, 2),row.distM = beetles_row_distM, FDtype = "AUC")
 output_beta_qiFD
 
 }

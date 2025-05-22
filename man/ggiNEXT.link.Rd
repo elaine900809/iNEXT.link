@@ -47,7 +47,8 @@ ggiNEXT.link(output_qiTD, facet.var = "Assemblage")
 # for interaction data with order q = 0, 1, 2
 data(beetles_plotA)
 data(beetles_row_tree)
-output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20, row.tree = beetles_row_tree)
+output_qiPD = iNEXT.link(beetles_plotA, diversity = 'PD', q = c(0, 1, 2), nboot = 20, 
+                         row.tree = beetles_row_tree)
 ggiNEXT.link(output_qiPD, type = c(1, 3))
 
 
@@ -55,6 +56,7 @@ ggiNEXT.link(output_qiPD, type = c(1, 3))
 # for interaction data with order q = 0, 1, 2
 data(beetles_plotA)
 data(beetles_row_distM)
-output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, row.distM = beetles_row_distM, FDtype = "AUC")
+output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, 
+                         row.distM = beetles_row_distM, FDtype = "AUC")
 ggiNEXT.link(output_qiFD)
 }
