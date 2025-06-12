@@ -1,3 +1,15 @@
+utils::globalVariables(c(
+  ".", "Assemblage", "Boots.one", "Coverage", "Dataset", "Estimate.SC",
+  "Even.LCL", "Even.UCL", "LCL", "Method", "ObsND", "Order", "Order.q",
+  "Reftime", "SC", "SC.LCL", "SC.UCL", "Size", "Spec.LCL", "Spec.UCL",
+  "Specialization", "Species", "Target", "ToListExplicit", "UCL", 
+  "aL_table", "abun", "as.Node", "branch.abun", "branch.length", 
+  "col.name", "data_gamma", "diagonalNetwork", "div_type", "even.class", 
+  "invChatPD_inc", "label", "map", "node", "nt", "phyBranchAL_Inc", 
+  "phylotr", "qPD", "row.name", "s.e.", "sd", "spe.c", "spe.r", "tgroup","Estimate"
+))
+
+
 check.size <- function(data, datatype, size, endpoint, knots) {
   
   if (length(knots) != length(data)) knots <- rep(knots,length(data))
@@ -992,6 +1004,8 @@ get.netphydiv <- function(data,q,B,row.tree = NULL,col.tree = NULL,conf, PDtype 
 
     })
   }, future.seed=NULL)
+  plan(sequential)
+  
   mle.sd <- lapply(mle.boot, function(x){
     tmp <- do.call(rbind,x)
     sapply(1:length(q), function(x){
@@ -1086,6 +1100,7 @@ get.netphydiv_iNE <- function(data,q,B,row.tree = NULL,col.tree = NULL,conf, kno
   out <- future_lapply(data, function(x){
     inex(data = x,q,B,row.tree,col.tree)
   }, future.seed = T)
+  plan(sequential)
 
   out1 <- c()
   for (i in 1:length(out)) {
@@ -1171,6 +1186,7 @@ iNEXTbeta.PDlink <- function(data, level, datatype='abundance', q = c(0, 1, 2),
           filter(branch.abun>0)
         return(aL_table)
       }, future.seed = TRUE)%>%do.call("rbind",.)
+      plan(sequential)
 
 
       get_phylogenetic_alpha_gamma <- function(aL_table_gamma, aL_table_alpha, n, m_gamma, m_alpha){
@@ -1320,8 +1336,10 @@ iNEXTbeta.PDlink <- function(data, level, datatype='abundance', q = c(0, 1, 2),
 
         return(res)
       }, future.seed = T)
-      # plan(multisession)
-
+      plan(sequential)
+      
+      
+      plan(multisession)
       # se = future_lapply(1:nboot, function(b){
       se = future_lapply(1:nboot, function(b){
         ## for each bootstrap samples
@@ -1445,6 +1463,7 @@ iNEXTbeta.PDlink <- function(data, level, datatype='abundance', q = c(0, 1, 2),
 
           return(aL_table)
         }, future.seed = TRUE)%>%do.call("rbind",.)
+        plan(sequential)
 
         bootstrap_data_alpha = as.matrix(x_bt) %>% as.vector
         bootstrap_data_alpha = bootstrap_data_alpha[bootstrap_data_alpha>0]
@@ -1508,6 +1527,7 @@ iNEXTbeta.PDlink <- function(data, level, datatype='abundance', q = c(0, 1, 2),
         # })%>%
       }, future.seed = T)%>%
         abind(along=3) %>% apply(1:2, sd)
+      plan(sequential)
 
 
     } else {
@@ -2306,7 +2326,7 @@ iNEXTlinkFD = function (data, row.distM = NULL, col.distM = NULL , datatype = "a
   colnames(index) <- c("Assemblage", "Functional Diversity",
                        "Functional Observed", "Functional Estimator", "s.e.",
                        "LCL", "UCL")
-  info <- iNEXT.3D:::DataInfo3D(data1, diversity = "FD", datatype = datatype,
+  info <- iNEXT.3D::DataInfo3D(data1, diversity = "FD", datatype = datatype,
                                 FDdistM = distM, FDtype = "tau_values", FDtau = threshold,
                                 nT = nT)
   info$n = lapply(dat, function(x) sum(x))
@@ -2554,7 +2574,7 @@ iNEXTlinkAUC = function (data, row.distM = NULL, col.distM = NULL , datatype = "
   colnames(index) <- c("Assemblage", "Functional Diversity",
                        "Functional Observed", "Functional Estimator", "s.e.",
                        "LCL", "UCL")
-  info <- iNEXT.3D:::DataInfo3D(data1, diversity = "FD", datatype = datatype,
+  info <- iNEXT.3D::DataInfo3D(data1, diversity = "FD", datatype = datatype,
                                 FDdistM = distM, FDtype = "AUC", nT = nT)
 
 
@@ -2715,6 +2735,8 @@ ObslinkPD = function (data,q,B,row.tree = NULL,col.tree = NULL,conf, PDtype = 'P
       return(PD)
     })
   }, future.seed=NULL)
+  plan(sequential)
+  
   mle.sd <- lapply(mle.boot, function(x){
     tmp <- do.call(rbind,x)
     sapply(1:length(q), function(x){

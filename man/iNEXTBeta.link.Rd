@@ -10,7 +10,7 @@ iNEXTbeta.link(
   diversity = "TD",
   level = NULL,
   q = c(0, 1, 2),
-  nboot = 20,
+  nboot = 30,
   conf = 0.95,
   comparison = "pool",
   row.tree = NULL,
@@ -97,7 +97,7 @@ output_beta_qiPD
 data(beetles_plotA)
 data(beetles_row_distM)
 output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, 
-                                  q = c(0, 1, 2),row.distM = beetles_row_distM, FDtype = "AUC")
+                                  q = c(0, 1, 2),row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 output_beta_qiFD
 
 }

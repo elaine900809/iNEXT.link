@@ -102,7 +102,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
     if(!is.null(row.tree)){row.tree$tip.label = gsub('\\.', '_',row.tree$tip.label)}
     if(!is.null(col.tree)){col.tree$tip.label = gsub('\\.', '_',col.tree$tip.label)}
     
-    if(class(data_new) == "list"){
+    if(inherits(data_new, "list")){
       table <- lapply(data_new, function(y){datainfphy(data = y, datatype = datatype,
                                                        row.tree = row.tree,col.tree = col.tree)})%>%
         do.call(rbind,.)
@@ -116,7 +116,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
     }
     
   }else if(diversity == 'TD'){
-    if(class(data_new) == "list"){
+    if(inherits(data_new, "list")){
       table <- lapply(data_new, function(y){datainf(data = y, datatype = datatype)})%>%do.call(rbind,.)
       rownames(table) <- names(data_new)
       table = tibble::rownames_to_column(table, var = "Networks")
@@ -127,7 +127,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
     }
   }else if(diversity == 'FD'){
     
-    if(class(data_new) == "list"){
+    if(inherits(data_new, "list")){
       table <-table <- lapply(data_new, function(y){datainffun(data = y, datatype = datatype,
                                                                row.distM = row.distM,col.distM = col.distM)})%>%
         do.call(rbind,.)
@@ -287,6 +287,9 @@ ggCompleteness.link <- function(output){
 #' @import reshape2
 #' @import sets
 #' @import dplyr
+#' @importFrom utils head
+#' @importFrom stats qnorm sd optimize quantile rbinom rmultinom
+#' @importFrom grDevices hcl
 #' 
 #' @return a list of three objects: \cr\cr
 #' (1) \code{$TDInfo} (\code{$PDInfo}, or \code{$FDInfo}) for summarizing data information for q = 0, 1 and 2. Refer to the output of \code{DataInfo.link} for details.
@@ -337,7 +340,7 @@ ggCompleteness.link <- function(output){
 #' # order q = 0, 1, 2
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
-#' output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 0, 
+#' output_qiFD = iNEXT.link(data = beetles_plotA, diversity = 'FD', q = c(0,1,2), nboot = 20, 
 #'                          row.distM = beetles_row_distM, FDtype = "AUC")
 #' output_qiFD
 #'
@@ -766,7 +769,7 @@ ggiNEXT.link <- function(output, type = c(1,2,3), facet.var = "Assemblage", colo
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
 #' output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
-#'                                  row.tree = beetles_row_tree)
+#'                                  row.tree = beetles_row_tree, nboot = 10)
 #' output_ObsAsy_qiPD
 #'
 #'
@@ -890,7 +893,7 @@ ObsAsy.link <- function(data, diversity = 'TD', q = seq(0, 2, 0.2), nboot = 30, 
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
 #' output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
-#'                                  row.tree = beetles_row_tree)
+#'                                  row.tree = beetles_row_tree, nboot = 10)
 #' ggObsAsy.link(output_ObsAsy_qiPD)
 #'
 #'
@@ -989,7 +992,7 @@ ggObsAsy.link <- function(output){
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
 #' output_est_qiPD <- estimateD.link(beetles_plotA, diversity = 'PD', 
-#'                                   base = "size", level = c(1500, 3000), row.tree = beetles_row_tree)
+#'                                   base = "size", level = c(1500, 3000), nboot = 10, row.tree = beetles_row_tree)
 #' 
 #' ## Functional network diversity for interaction data with two target coverages (93% and 97%)
 #' data(beetles_plotA)
@@ -1233,7 +1236,7 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
 #' output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, 
-#'                                   q = c(0, 1, 2),row.distM = beetles_row_distM, FDtype = "AUC")
+#'                                   q = c(0, 1, 2),row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 #' output_beta_qiFD
 #'
 #' @references
@@ -1243,7 +1246,7 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
 #' @export
 
 iNEXTbeta.link = function(data, diversity = 'TD', level = NULL,
-                          q = c(0, 1, 2), nboot = 20, conf = 0.95, comparison = 'pool',
+                          q = c(0, 1, 2), nboot = 30, conf = 0.95, comparison = 'pool',
                           row.tree = NULL, col.tree = NULL, PDtype = 'meanPD', row.distM = NULL, col.distM = NULL,
                           FDtype = "AUC", FDtau = NULL, FDcut_number = 30){
   
@@ -1611,7 +1614,7 @@ iNEXTbeta.link = function(data, diversity = 'TD', level = NULL,
 #' data(beetles_plotA)
 #' data(beetles_row_distM)
 #' output_beta_qiFD = iNEXTbeta.link(data = beetles_plotA, diversity = 'FD', level = NULL, q = c(0, 1, 2), 
-#'                                   row.distM = beetles_row_distM, FDtype = "AUC")
+#'                                   row.distM = beetles_row_distM, FDtype = "AUC", nboot = 10)
 #' ggiNEXTbeta.link(output_beta_qiFD, type = 'B')
 #' ggiNEXTbeta.link(output_beta_qiFD, type = 'D')
 #'
@@ -1764,6 +1767,10 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param E.class an integer vector between 1 to 5.
 #' @param decomposition decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
+#' @importFrom iNEXT.4steps Evenness
+#' @importFrom purrr map map_dfr
+#' @importFrom iNEXT iNEXT
+#' 
 #' @return A list of several tables containing estimated (or observed) evenness with order q.\cr
 #'         Each tables represents a class of specialization.
 #'         \item{Order.q}{the network diversity order of q.}
@@ -1833,13 +1840,21 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
         
         if(nboot > 1){
           
+
+          # plan(multisession)
           se = do.call(rbind,future_lapply(1:nboot, function(i){
             
             bootstrap_population = iNEXT.beta3D:::bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
             bootstrap_sample = sapply(1:ncol(sub), function(k) rmultinom(n = 1, size = sum(sub[,k]), prob = bootstrap_population[,k]))
             
-            res_boost = iNEXT.4steps::Evenness(bootstrap_sample, q = q,datatype = datatype,
-                                               method = method, nboot=0, E.class = e, SC = SC)
+            if(method == "Observed"){
+              res_boost = iNEXT.4steps::Evenness(bootstrap_sample, q = q,datatype = datatype,
+                                                 method = method, nboot=0, E.class = e, SC = SC)
+            }else{
+              res_boost = Evenness_asym(sub, q = q,datatype = datatype, nboot=0, E.class = e)
+            }
+            
+
             wk = colSums(bootstrap_sample)/sum(bootstrap_sample)
             even_boost = sapply(q, function(r){
               tmp = res_boost[[1]] |> filter(Order.q == r)
@@ -1849,6 +1864,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
             even_boost
             return(even_boost)
           }, future.seed = TRUE)) %>% apply(2,sd) %>% as.data.frame()
+          plan(sequential)
           
           colnames(se) = c("s.e.")
           
@@ -1927,9 +1943,13 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param E.class an integer vector between 1 to 5.
-#' @param SC a standardized coverage for calculating specialization index. It is used when \code{method = 'Estimated'}. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).
+#' @param SC a standardized coverage for calculating specialization index. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).
 #' @param decomposition decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
-#' @return A list of several tables containing estimated (or observed) evenness with order q.\cr
+#' @importFrom iNEXT.4steps Evenness
+#' @importFrom purrr map map_dfr
+#' @importFrom iNEXT iNEXT
+#' 
+#' @return A list of several tables containing    estimated (or observed) evenness with order q.\cr
 #'         Each tables represents a class of specialization.
 #'         \item{Order.q}{the network diversity order of q.}
 #'         \item{Specialization}{the specialization of order q.}
@@ -2006,6 +2026,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
         
         if(nboot > 1){
           
+          # plan(multisession)
           se = do.call(rbind,future_lapply(1:nboot, function(i){
             
             bootstrap_population = iNEXT.beta3D:::bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
@@ -2022,6 +2043,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
             even_boost
             return(even_boost)
           }, future.seed = TRUE)) %>% apply(2,sd) %>% as.data.frame()
+          plan(sequential)
           
           colnames(se) = c("s.e.")
           
@@ -2099,7 +2121,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
 #'
 #' @examples
 #' data(beetles_plotA)
-#' output_spec = Spec.link(beetles_plotA)
+#' output_spec = Spec.link.est(beetles_plotA, nboot = 5)
 #' ggSpec.link(output_spec)
 #' @export
 

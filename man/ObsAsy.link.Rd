@@ -76,7 +76,7 @@ output_ObsAsy_qiTD
 data(beetles_plotA)
 data(beetles_row_tree)
 output_ObsAsy_qiPD = ObsAsy.link(data = beetles_plotA, diversity = 'PD', q = seq(0, 2, 0.2), 
-                                 row.tree = beetles_row_tree)
+                                 row.tree = beetles_row_tree, nboot = 10)
 output_ObsAsy_qiPD
 
 

@@ -32,10 +32,13 @@ Imports:
     future,
     reshape2,
     utils,
+    iNEXT,
     iNEXT.3D,
     iNEXT.4steps,
     iNEXT.beta3D,
-    ade4
+    ade4,
+    grDevices,
+    purrr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2

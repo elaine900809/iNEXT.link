@@ -81,7 +81,7 @@ output_est_qiTD <- estimateD.link(beetles_plotA, diversity = 'TD', q = c(0,1,2),
 data(beetles_plotA)
 data(beetles_row_tree)
 output_est_qiPD <- estimateD.link(beetles_plotA, diversity = 'PD', 
-                                  base = "size", level = c(1500, 3000), row.tree = beetles_row_tree)
+                                  base = "size", level = c(1500, 3000), nboot = 10, row.tree = beetles_row_tree)
 
 ## Functional network diversity for interaction data with two target coverages (93\% and 97\%)
 data(beetles_plotA)

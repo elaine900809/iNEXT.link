@@ -26,12 +26,12 @@ sampling uncertainty and constructing confidence intervals. Bootstrap replicatio
 
 \item{E.class}{an integer vector between 1 to 5.}
 
-\item{SC}{a standardized coverage for calculating specialization index. It is used when \code{method = 'Estimated'}. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).}
+\item{SC}{a standardized coverage for calculating specialization index. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).}
 
 \item{decomposition}{decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.}
 }
 \value{
-A list of several tables containing estimated (or observed) evenness with order q.\cr
+A list of several tables containing    estimated (or observed) evenness with order q.\cr
         Each tables represents a class of specialization.
         \item{Order.q}{the network diversity order of q.}
         \item{Specialization}{the specialization of order q.}

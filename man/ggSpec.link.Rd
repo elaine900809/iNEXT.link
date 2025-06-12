@@ -17,6 +17,6 @@ ggplot for Specialization ggSpec.link The figure for estimation of Specializatio
 }
 \examples{
 data(beetles_plotA)
-output_spec = Spec.link(beetles_plotA)
+output_spec = Spec.link.est(beetles_plotA, nboot = 5)
 ggSpec.link(output_spec)
 }
