@@ -1849,8 +1849,8 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
             
             if(method == "Observed"){
               res_boost = iNEXT.4steps::Evenness(bootstrap_sample, q = q,datatype = datatype,
-                                                 method = method, nboot=0, E.class = e, SC = SC)
-            }else{
+                                                 method = method, nboot=0, E.class = e)
+            }else if(method == "Asymptotic"){
               res_boost = Evenness_asym(sub, q = q,datatype = datatype, nboot=0, E.class = e)
             }
             
