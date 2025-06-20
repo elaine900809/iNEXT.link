@@ -41,7 +41,7 @@ iNEXT.link adapts iNEXT, iNEXT.3D, and iNEXT.4steps to quantify and estimate 3D 
 
 **Step 1: Assessment of network completeness profiles** 
 
-The sample completeness of a network is characterized by profile depicting the sample completeness (developed in Chiu et al. 2023) with respect to an order q ??? 0. When q = 0, the completeness measure reduces to (an upper bound) of the proportion of the observed interaction richness relative to an estimated interaction richness. When q = 1, the completeness measure reduces to the network-version sample coverage (the proportion of the total number of interaction events that belong to detected ones). When q ??? 2, the completeness measure is disproportionally sensitive to highly frequent interactions. The proposed profile allows for tuning the effect of interaction frequency on the sample completeness. For a complete network (i.e., there are no undetected interactions), the estimated sample completeness profile will be a horizontal line at the level of unity for all orders of q ??? 0. In contrast, for an incomplete network, the sample completeness profile will be an increasing function of order q.
+The sample completeness of a network is characterized by profile depicting the sample completeness (developed in Chiu et al. 2023) with respect to an order q ??? 0. When q = 0, the completeness measure reduces to (an upper bound) of the proportion of the observed interaction richness relative to an estimated interaction richness. When q = 1, the completeness measure reduces to the network-version sample coverage (the proportion of the total number of interaction events that belong to detected ones). When q ??? 2, the completeness measure is disproportionally sensitive to highly frequent interactions. The proposed profile allows for tuning the effect of interaction frequency on the sample completeness. For a complete network (i.e., there are no undetected interactions), the estimated sample completeness profile will be a horizontal line at the level of unity for all orders of q > 0. In contrast, for an incomplete network, the sample completeness profile will be an increasing function of order q.
 
 **STEP 2. Sample-size- or size-based rarefaction and extrapolation analysis with 3D network diversity for q = 0, 1, and 2, and the asymptotic network diversity profile. Here “size??? means the number of interaction events.**
 
@@ -1190,6 +1190,12 @@ for(i in 1:5){
 }
 
 tmp[[1]]
+```
+
+Run the following code to display the different class of curves:
+
+```{r}
+ggSpec.link(output_spec)
 ```
 
 ## <span style="color:red;">FUNCTION iNEXTbeta.link</span>
