@@ -1,7 +1,7 @@
 # DataInfo.link ----------------------
 #' Exhibit basic data information
 #'
-#' \code{DataInfo.link}: exhibits basic data information
+#' \code{DataInfo.link}: exhibit basic data information for three dimensions of biodiversity.
 #'
 #' @param data  a \code{list} of \code{data.frames}, each \code{data.frames} represents col.species-by-row.species abundance matrix.
 #' @param diversity selection of diversity type: \code{'TD'} = 'Taxonomic diversity', \code{'PD'} = 'Phylogenetic diversity', and \code{'FD'} = 'Functional diversity'.
@@ -13,7 +13,7 @@
 #' @return a data.frame including basic data information.\cr\cr
 #' Basic information shared by TD, mean-PD and FD includes Network name (\code{Network}),
 #' number of observed interaction events in the reference sample (\code{n}), number of observed species in row assemblage (\code{S.obs(row)}), number of observed species in column assemblage (\code{S.obs(col)}), 
-#' number of observed interactions in the reference sample (\code{Link.obs}), the proportion of links between species that are realized in the network matrix (\code{Connectance}), estimator of the sample coverage of the reference sample (\code{Coverage}).\cr\cr
+#' number of observed interactions in the reference sample (\code{Link.obs}), the proportion of links between species that are realized in the network matrix (\code{Connectance}), estimator of the sample coverage of the reference sample (\code{SC(n)}).\cr\cr
 #' Other additional information is given below.\cr\cr
 #' (1) TD: the first ten frequency counts in the reference sample (\code{f1}--\code{f10}).\cr\cr
 #' (2) Mean-PD: the number of those singletons and doubletons in the node/branch set (\code{f1*},\code{f2*}) , 
@@ -128,7 +128,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
   }else if(diversity == 'FD'){
     
     if(inherits(data_new, "list")){
-      table <-table <- lapply(data_new, function(y){datainffun(data = y, datatype = datatype,
+      table <- lapply(data_new, function(y){datainffun(data = y, datatype = datatype,
                                                                row.distM = row.distM,col.distM = col.distM)})%>%
         do.call(rbind,.)
       rownames(table) <- names(data_new)
@@ -159,7 +159,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
 # Completeness.link ----
 #' Sample Completeness main function
 #'
-#' \code{Completeness.link} Estimation of Sample Completeness with order q
+#' \code{Completeness.link}: Estimation of Sample Completeness with order q
 #'
 #' @param data a \code{list} of \code{data.frames}, each \code{data.frames} represents col.species-by-row.species abundance matrix.
 #' @param q q a numerical vector specifying the diversity orders. Default is \code{seq(0, 2, 0.2)}.
@@ -180,7 +180,7 @@ DataInfo.link <- function(data, diversity = 'TD', row.tree = NULL, col.tree = NU
 #' output_com
 #'
 #' @references
-#' Chao, A., Y. Kubota, D. Zelen??, C.-H. Chiu, C.-F. Li, B. Kusumoto, M. Yasuhara, S. Thorn, C.-L. Wei, M. J. Costello, and R. K. Colwell (2020). Quantifying sample completeness and comparing diversities among assemblages. Ecological Research, 35, 292-314.
+#' Chao, A., Y. Kubota, D. Zeleny, C.-H. Chiu, C.-F. Li, B. Kusumoto, M. Yasuhara, S. Thorn, C.-L. Wei, M. J. Costello, and R. K. Colwell (2020). Quantifying sample completeness and comparing diversities among assemblages. Ecological Research, 35, 292-314.
 #' @export
 Completeness.link <- function(data, q = seq(0, 2, 0.2), nboot = 30, conf = 0.95){
   
@@ -213,11 +213,11 @@ Completeness.link <- function(data, q = seq(0, 2, 0.2), nboot = 30, conf = 0.95)
 #' @examples
 #' # Plot the completeness curve
 #' data(beetles_plotA)
-#' output_com = Completeness.link(beetles)
+#' output_com = Completeness.link(beetles_plotA)
 #' ggCompleteness.link(output_com)
 #' 
 #' @references
-#' Chao, A., Y. Kubota, D. Zelen??, C.-H. Chiu, C.-F. Li, B. Kusumoto, M. Yasuhara, S. Thorn, C.-L. Wei, M. J. Costello, and R. K. Colwell (2020). Quantifying sample completeness and comparing diversities among assemblages. Ecological Research, 35, 292-314.
+#' Chao, A., Y. Kubota, D. Zeleny, C.-H. Chiu, C.-F. Li, B. Kusumoto, M. Yasuhara, S. Thorn, C.-L. Wei, M. J. Costello, and R. K. Colwell (2020). Quantifying sample completeness and comparing diversities among assemblages. Ecological Research, 35, 292-314.
 ##' @export
 ggCompleteness.link <- function(output){
   
@@ -345,11 +345,8 @@ ggCompleteness.link <- function(output){
 #' output_qiFD
 #'
 #' @references
-#' Chao, A., Chiu C.-H. and Jost, L. (2010). Phylogenetic diversity measures based on Hill numbers. \emph{Philosophical Transactions of the Royal Society B.}, 365, 3599-3609. \cr\cr
-#' Chao, A., Chiu, C.-H., Hsieh, T. C., Davis, T., Nipperess, D., and Faith, D. (2015). Rarefaction and extrapolation of phylogenetic diversity. \emph{Methods in Ecology and Evolution}, 6, 380-388.\cr\cr
-#' Chao, A., Chiu C.-H. and Jost L. (2016). Phylogenetic diversity measures and their decomposition: a framework based on Hill numbers. pp. 141-172 in Pellens R. and Grandcolas P. (eds)
-#' \emph{Biodiversity Conservation and Phylogenetic Systematics: Preserving our Evolutionary Heritage in an Extinction Crisis}, Springer. \cr\cr
-#' Hsieh, T. C. and Chao, A. (2017). Rarefaction and extrapolation: making fair comparison of abundance-sensitive phylogenetic diversity among multiple assemblages. \emph{Systematic Biology}, 66, 100-111.
+#' Chao, A., Henderson, P. A., Chiu, C.-H., Moyes, F., Hu, K.-H., Dornelas, M. and Magurran, A. E. (2021). Measuring temporal change in alpha diversity: a framework integrating taxonomic, phylogenetic and functional diversity and the iNEXT.3D standardization. 
+#' \emph{Methods in Ecology and Evolution.}, 12, 1926-1940. \cr\cr
 #' @export
 #' 
 
@@ -631,7 +628,7 @@ iNEXT.link <- function(data, diversity = 'TD', q = c(0,1,2), size = NULL,
 #'  all curves are in the same color (\code{color.var = "None"}); 
 #'  use different colors for diversity orders (\code{color.var = "Order.q"}); 
 #'  use different colors for assemblages/sites (\code{color.var = "Assemblage"}); 
-#'  use different colors for combinations of diversity order and assemblage (\code{color.var = "Both"}).  
+#'  use different colors for combinations of diversity orders and assemblage (\code{color.var = "Both"}).  
 #' @return a \code{ggplot2} object for sample-size-based rarefaction/extrapolation curve (\code{type = 1}), sample completeness curve (\code{type = 2}), and coverage-based rarefaction/extrapolation curve (\code{type = 3}).
 #' 
 #' @examples
@@ -946,7 +943,7 @@ ggObsAsy.link <- function(output){
 
 
 # estimateD.link  -------------------------------------------------------------------
-#' Compute species diversity with a particular of sample size/coverage
+#' Compute 3D with a particular of sample size/coverage
 #'
 #' \code{estimateD.link} computes species diversity (Hill numbers with q = 0, 1 and 2) with a particular user-specified level of sample size or sample coverage.
 #'
@@ -987,12 +984,14 @@ ggObsAsy.link <- function(output){
 #' data(beetles_plotA)
 #' output_est_qiTD <- estimateD.link(beetles_plotA, diversity = 'TD', q = c(0,1,2),
 #'                                   base = "coverage", level = c(0.93, 0.97))
+#' output_est_qiTD
 #' 
 #' # Phylogenetic network diversity for interaction data with two target sizes (1500 and 3000)
 #' data(beetles_plotA)
 #' data(beetles_row_tree)
 #' output_est_qiPD <- estimateD.link(beetles_plotA, diversity = 'PD', 
 #'                                   base = "size", level = c(1500, 3000), nboot = 10, row.tree = beetles_row_tree)
+#' output_est_qiPD
 #' 
 #' ## Functional network diversity for interaction data with two target coverages (93% and 97%)
 #' data(beetles_plotA)
@@ -1000,7 +999,8 @@ ggObsAsy.link <- function(output){
 #' output_est_qiFD = estimateD.link(data = beetles_plotA, diversity = 'FD', q = c(0, 1, 2),
 #'                                  base = "coverage", level = c(0.93, 0.97), nboot = 10,
 #'                                  row.distM = beetles_row_distM, FDtype = "AUC")
-#'
+#'output_est_qiFD
+#' 
 #' 
 #' }
 #' @export
@@ -1057,7 +1057,7 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
       
       level <- sapply(data, function(x) {
         ni <- sum(x)
-        iNEXT.3D:::Coverage(data = x, datatype = datatype, m = 2 * ni)
+        Coverage(data = x, datatype = datatype, m = 2 * ni)
       })
       
       level <- min(level)
@@ -1075,12 +1075,12 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
           }else{
             size_m = level
           }
-          level = iNEXT.3D:::Coverage(data_2d,m= size_m, datatype = 'abundance')
+          level = Coverage(data_2d,m= size_m, datatype = 'abundance')
 
         }
 
 
-        ref= iNEXT.3D:::Coverage(data_2d, m = n, datatype = 'abundance')
+        ref= Coverage(data_2d, m = n, datatype = 'abundance')
         #
         aL_table = create.aili(data_2d, row.tree = row.tree, col.tree = col.tree) %>%
           select(branch.abun, branch.length, tgroup)%>%
@@ -1089,7 +1089,7 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
         ## boot
         tbar <- sum(aL_table$branch.length*aL_table$branch.abun)/n
         
-        qPDm <-iNEXT.3D:::PhD.m.est(ai = aL_table$branch.abun,
+        qPDm <-PhD.m.est(ai = aL_table$branch.abun,
                                     Lis = aL_table$branch.length%>%as.matrix(),
                                     m = size_m,
                                     q = q,nt = n, reft = tbar,cal = PDtype) %>% as.vector()
@@ -1099,7 +1099,7 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
           boot.sam <- sample.boot.phy(data_2d,nboot,row.tree = row.tree,col.tree = col.tree)
           PD.sd <- lapply(1:length(boot.sam), function(i){
             if(base == "size"){
-              tmp = iNEXT.3D:::PhD.m.est(ai = boot.sam[[i]]$branch.abun,
+              tmp = PhD.m.est(ai = boot.sam[[i]]$branch.abun,
                                          Lis = boot.sam[[i]]$branch.length%>%as.matrix(),
                                          m = size_m,
                                          q = q,nt = n, reft = tbar, cal = PDtype)%>%
@@ -1112,14 +1112,14 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
               colnames(Li_b) = paste0("T",tbar)
               isn0 <- ai_B > 0
               
-              tmp = iNEXT.3D:::invChatPD_abu(x = x_B, 
-                                             ai = ai_B[isn0], 
-                                             Lis = Li_b[isn0, , drop = F], 
-                                             q = q, 
-                                             Cs = level, 
-                                             n = sum(x_B),
-                                             reft = tbar, 
-                                             cal = PDtype)$qPD%>%as.vector()%>%as.data.frame()
+              tmp = invChatPD_abu(x = x_B, 
+                                  ai = ai_B[isn0], 
+                                  Lis = Li_b[isn0, , drop = F], 
+                                  q = q, 
+                                  Cs = level, 
+                                  n = sum(x_B),
+                                  reft = tbar, 
+                                  cal = PDtype)$qPD%>%as.vector()%>%as.data.frame()
             }
             
             return(tmp)
@@ -1179,8 +1179,8 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
 
 # iNEXTbeta.link ---------------------------
 #' Interpolation (rarefaction) and extrapolation of network beta diversity
-
-#' Function \code{iNEXTbeta.link} Interpolation and extrapolation of beta diversity with order q
+#'
+#' \code{iNEXTbeta.link} Interpolation and extrapolation of beta diversity with order q.
 #'
 #' @param data data can be input as a \code{list} of \code{data.frame}, each \code{data.frame} represents col.species-by-row.species abundance matrix; see example 1 for an example.
 #' @param diversity selection of diversity type: \code{'TD'} = 'Taxonomic diversity', \code{'PD'} = 'Phylogenetic diversity', and \code{'FD'} = 'Functional diversity'.
@@ -1189,15 +1189,15 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
 #' @param nboot a positive integer specifying the number of bootstrap replications when assessing
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
-#' @param comparison selection of comparison method. \code{'pool'} compares all datasets in once, and \code{'pair'} compares all datasets two by two. 
+#' @param comparison selection of comparison method. \code{'pool'} compares all datasets in once, and \code{'pair'} compares will be computed for all pairs of datasets in the input list.
 #' @param col.tree (required only when \code{diversity = "PD"}), a phylogenetic tree of column assemblage in the pooled network column assemblage.
 #' @param row.tree (required only when \code{diversity = "PD"}), a phylogenetic tree of row assemblage in the pooled network row assemblage.
 #' @param PDtype (required only when \code{diversity = "PD"}), select PD type: \code{PDtype = "PD"}(effective total branch length) or
 #' \code{PDtype = "meanPD"}(effective number of equally divergent lineages).Default is \code{"meanPD"}.
 #' @param col.distM (required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species of column assemblage in the pooled network column assemblage.
 #' @param row.distM (required only when \code{diversity = "FD"}), a species pairwise distance matrix for all species of row assemblage in the pooled network row assemblage.
-#' @param FDtype (required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_values"} for FD under specified threshold values, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.
-#' @param FDtau (required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical vector between 0 and 1 specifying tau values (threshold levels). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).
+#' @param FDtype (required only when \code{diversity = "FD"}), select FD type: \code{FDtype = "tau_value"} for FD under specified threshold value, or \code{FDtype = "AUC"} (area under the curve of tau-profile) for an overall FD which integrates all threshold values between zero and one. Default is \code{"AUC"}.
+#' @param FDtau (required only when \code{diversity = "FD"} and \code{FDtype = "tau_value"}), a numerical vector between 0 and 1 specifying tau value (threshold levels). If \code{NULL} (default), then threshold is set to be the mean distance between any two individuals randomly selected from the pooled assemblage (i.e., quadratic entropy).
 #' @param FDcut_number (required only when \code{diversity = "FD"} and \code{FDtype = "AUC"}), a numeric number to split zero to one into several equal-spaced length. Default is \code{30}.
 #' @return A list of seven matrices with three diversity dimensions and four dissimilarity measures.
 #' \item{Dataset}{the name of datasets.}
@@ -1240,9 +1240,8 @@ estimateD.link = function(data, diversity = 'TD', q = c(0, 1, 2), base = "covera
 #' output_beta_qiFD
 #'
 #' @references
-#' Chao, A., Chazdon, R. L., Colwell, R. K. and Shen, T.-J.(2005). A new statistical approach for assessing similarity of species composition with incidence and abundance data. Ecology Letters 8, 148-159. (pdf file) Spanish translation in pp. 85-96 of Halffter, G. Soberon, J., Koleff, P. and Melic, A. (eds) 2005 Sobre Diversidad Biologica: el Sognificado de las Diversidades Alfa, Beta y Gamma. m3m-Monografias 3ercer Milenio, vol. 4, SEA, CONABIO, Grupo DIVERSITAS & CONACYT, Zaragoza. IV +242 pp.
-#' Chiu, C.-H., Jost, L. and Chao*, A. (2014). Phylogenetic beta diversity, similarity, and differentiation measures based on Hill numbers. Ecological Monographs 84, 21-44.
-#' Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zelen??, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. To appear in Ecological Monographs.
+#' Chao, A., Thorn, S., Chiu, C.-H., Moyes, F., Hu, K.-H., Chazdon, R. L., Wu, J., Dornelas, M., Zeleny, D., Colwell, R. K., and Magurran, A. E. (2023). Rarefaction and extrapolation with beta diversity under a framework of Hill numbers: the iNEXT.beta3D standardization. 
+#' \emph{Ecological Monographs e1588.} \cr\cr
 #' @export
 
 iNEXTbeta.link = function(data, diversity = 'TD', level = NULL,
@@ -1766,10 +1765,9 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param E.class an integer vector between 1 to 5.
-#' @param decomposition decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
+#' @param level the type of specialization measure: Choose "weighted" for weighted species-level specialization (default), or "network" for network-level specialization.
 #' @importFrom iNEXT.4steps Evenness
 #' @importFrom purrr map map_dfr
-#' @importFrom iNEXT iNEXT
 #' 
 #' @return A list of several tables containing estimated (or observed) evenness with order q.\cr
 #'         Each tables represents a class of specialization.
@@ -1778,15 +1776,15 @@ ggiNEXTbeta.link <- function(output, type = c('B', 'D')){
 #'         \item{s.e.}{standard error of evenness.}
 #'         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
 #'         \item{Method}{\code{"Asymptotic"} or \code{"Observed"}.}
-#'         \item{Dataset}{the Dataset name.}
+#'         \item{Dataset}{the dataset name.}
 #'         \item{Measure}{specialization class.}
-#'         \item{decomposition}{decomposition type.}
+#'         \item{level}{type of specialization measure.}
 #'         
 #'
 #' @examples
 #' data(beetles)
-#' output_spec = Spec.link.ObsAsy(beetles)
-#' output_spec
+#' output_spec_ObsAsy = Spec.link.ObsAsy(beetles)
+#' output_spec_ObsAsy
 #' @export
 #' 
 
@@ -1794,7 +1792,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
                           method = "Asymptotic",
                           nboot = 30,
                           conf = 0.95,
-                          E.class = c(1:5), decomposition = "relative"){
+                          E.class = c(1:5), level = "weighted"){
   
   datatype = "abundance"
   diversity = 'TD'
@@ -1802,20 +1800,20 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
   long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
   if ( !(method %in% c("Asymptotic", "Observed")) )
     stop("Please select one of below method: 'Asymptotic', 'Observed'", call. = FALSE)
-  if ( !(decomposition %in% c("relative", "absolute")) )
-    stop("Please select one of below decomposition: 'relative', 'absolute'", call. = FALSE)
+  if ( !(level %in% c("weighted", "network")) )
+    stop("Please select one of below level: 'weighted', 'network'", call. = FALSE)
   
-  if (decomposition == "relative"){
+  if (level == "weighted"){
     index = lapply(data,function(x){
       sub = apply(x,2,function(i){sum(i!=0)})
       return(index = sum(sub == 1))
     })
     if(sum(unlist(index)) != 0){
-      stop("Under the current setting decomposition = 'relative', cases where a column species interacts with only a single row species cannot be properly computed. Please inspect and preprocess the input list accordingly, or consider using decomposition = 'absolute' instead.", call. = FALSE)
+      stop("Under the current setting level = 'weighted', cases where a column species interacts with only a single row species cannot be properly computed. Please inspect and preprocess the input list accordingly, or consider using level = 'network' instead.", call. = FALSE)
     }
   }
   
-  if(decomposition == "relative"){
+  if(level == "weighted"){
     
     Spec <- lapply(E.class, function(e){
       each_class = lapply(1:length(data), function(i){
@@ -1844,7 +1842,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
           # plan(multisession)
           se = do.call(rbind,future_lapply(1:nboot, function(i){
             
-            bootstrap_population = iNEXT.beta3D:::bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
+            bootstrap_population = bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
             bootstrap_sample = sapply(1:ncol(sub), function(k) rmultinom(n = 1, size = sum(sub[,k]), prob = bootstrap_population[,k]))
             
             if(method == "Observed"){
@@ -1879,8 +1877,8 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
         
         res = cbind('Specialization' = 1-even,se)  %>% 
           mutate(Network = assemblage, Method = method ,Order.q = q,
-                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
-          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","Network","class","decomposition"))
+                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), level = "Weighted species-level") %>%
+          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","Network","class","level"))
         
         return(res)
       })%>%do.call("rbind",.)
@@ -1893,7 +1891,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
       names(Spec[[i]])[7:8] <- c("Dataset", "Measure")
     }
     
-  }else if(decomposition == "absolute"){
+  }else if(level == "network"){
 
     
     long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
@@ -1912,7 +1910,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
             mutate(Evenness = 1-Evenness, Even.LCL = 1-Even.LCL, Even.UCL = 1-Even.UCL) %>% 
             select(-Assemblage)%>%
             rename('Specialization'='Evenness', 'Spec.UCL' ='Even.LCL', 'Spec.LCL' ='Even.UCL')%>%
-            mutate(Network = names(long)[[i]],class = paste0("1 - E",e), decomposition = "absolute")
+            mutate(Network = names(long)[[i]],class = paste0("1 - E",e), level = "Network-level specialization")
         })
         # if(method == "Observed") index = 1
         # if(method == "Estimated") index = 2
@@ -1943,11 +1941,11 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
 #' sampling uncertainty and constructing confidence intervals. Bootstrap replications are generally time consuming. Enter 0 to skip the bootstrap procedures. Default is \code{30}.
 #' @param conf a positive number < 1 specifying the level of confidence interval. Default is \code{0.95}.
 #' @param E.class an integer vector between 1 to 5.
-#' @param SC a standardized coverage for calculating specialization index. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).
-#' @param decomposition decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.
+#' @param SC a standardized coverage for calculating specialization index. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{SC = Cmax}).
+#' @param level the type of specialization measure: Choose "weighted" for weighted species-level specialization (default), or "network" for network-level specialization.
 #' @importFrom iNEXT.4steps Evenness
 #' @importFrom purrr map map_dfr
-#' @importFrom iNEXT iNEXT
+#'
 #' 
 #' @return A list of several tables containing    estimated (or observed) evenness with order q.\cr
 #'         Each tables represents a class of specialization.
@@ -1955,10 +1953,10 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
 #'         \item{Specialization}{the specialization of order q.}
 #'         \item{s.e.}{standard error of evenness.}
 #'         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
-#'         \item{SC}{the target standardized coverage value. (only when \code{method = "Estimated"})}
-#'         \item{Dataset}{the Dataset name.}
+#'         \item{SC}{the target standardized coverage value.}
+#'         \item{Dataset}{the dataset name.}
 #'         \item{Measure}{specialization class.}
-#'         \item{decomposition}{decomposition type.}
+#'         \item{level}{type of specialization measure.}
 #'         
 #'
 #' @examples
@@ -1973,29 +1971,29 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
                       nboot = 30,
                       conf = 0.95,
                       E.class = c(1:5),
-                      SC = NULL, decomposition = "relative"){
+                      SC = NULL, level = "weighted"){
   
   method = "Estimated"
   datatype = "abundance"
   diversity = 'TD'
   
-  if ( !(decomposition %in% c("relative", "absolute")) )
-    stop("Please select one of below decomposition: 'relative', 'absolute'", call. = FALSE)
+  if ( !(level %in% c("weighted", "network")) )
+    stop("Please select one of below level: 'weighted', 'network'", call. = FALSE)
   
-  if (decomposition == "relative"){
+  if (level == "weighted"){
     index = lapply(data,function(x){
       sub = apply(x,2,function(i){sum(i!=0)})
       return(index = sum(sub == 1))
     })
     if(sum(unlist(index)) != 0){
-      stop("Under the current setting decomposition = 'relative', cases where a column species interacts with only a single row species cannot be properly computed. Please inspect and preprocess the input list accordingly, or consider using decomposition = 'absolute' instead.", call. = FALSE)
+      stop("Under the current setting level = 'weighted', cases where a column species interacts with only a single row species cannot be properly computed. Please inspect and preprocess the input list accordingly, or consider using level = 'network' instead.", call. = FALSE)
     }
   }
   
   long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
   
   if(method == "Estimated"){
-    if (is.null(SC)) SC = sapply(long, function(x) iNEXT.3D:::Coverage(x, datatype = 'abundance', 2 * sum(x))) %>% min
+    if (is.null(SC)) SC = sapply(long, function(x) Coverage(x, datatype = 'abundance', 2 * sum(x))) %>% min
   }else{
     if(is.null(SC)){
       SC = DataInfo.link(data, diversity="TD")$Coverage
@@ -2004,7 +2002,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
     }
   }
   
-  if(decomposition == "relative"){
+  if(level == "weighted"){
     
     Spec <- lapply(E.class, function(e){
       each_class = lapply(1:length(data), function(i){
@@ -2029,7 +2027,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
           # plan(multisession)
           se = do.call(rbind,future_lapply(1:nboot, function(i){
             
-            bootstrap_population = iNEXT.beta3D:::bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
+            bootstrap_population = bootstrap_population_multiple_assemblage(data = sub, data_gamma = rowSums(sub), datatype = 'abundance')
             bootstrap_sample = sapply(1:ncol(sub), function(k) rmultinom(n = 1, size = sum(sub[,k]), prob = bootstrap_population[,k]))
             
             res_boost = iNEXT.4steps::Evenness(bootstrap_sample, q = q,datatype = datatype,
@@ -2058,8 +2056,8 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
         
         res = cbind('Specialization' = 1-even,se)  %>% 
           mutate(Network = assemblage, Method = method ,Order.q = q, SC = SC,
-                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), decomposition = "relative") %>%
-          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","SC","Network","class","decomposition"))
+                 "Spec.LCL" = Specialization - tmp*`s.e.`, "Spec.UCL"= Specialization + tmp*`s.e.`, class = paste0("1 - E",e), level = "Weighted species-level") %>%
+          select(c("Order.q", 'Specialization',"s.e.", "Spec.UCL", "Spec.LCL","Method","SC","Network","class","level"))
         
         return(res)
       })%>%do.call("rbind",.)
@@ -2075,7 +2073,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
       Spec[[i]]$Method <- NULL
     }
     
-  }else if(decomposition == "absolute"){
+  }else if(level == "network"){
     
     long = lapply(data, function(da){da%>%as.data.frame()%>%gather(key = "col_sp", value = "abundance")%>%.[,2]})
     
@@ -2089,7 +2087,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
               mutate(Evenness = 1-Evenness, Even.LCL = 1-Even.LCL, Even.UCL = 1-Even.UCL) %>% 
               select(-Assemblage)%>%
               rename('Specialization'='Evenness', 'Spec.UCL' ='Even.LCL', 'Spec.LCL' ='Even.UCL')%>%
-              mutate(Network = names(long)[[i]],class = paste0("1 - E",e), decomposition = "absolute")
+              mutate(Network = names(long)[[i]],class = paste0("1 - E",e), level = "Network-level specialization")
           })
           # if(method == "Observed") index = 1
           # if(method == "Estimated") index = 2
@@ -2115,7 +2113,10 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
 
 
 # ggSpec.link -------------------------------------------------------------------
-#' ggplot for Specialization ggSpec.link The figure for estimation of Specialization with order q
+#' ggplot2 extension for output from \code{Spec.link.est} and \code{Spec.link.ObsAsy}.
+#' 
+#'  \code{ggSpec.link}: Plots q-profile based on the output of \code{Spec.link.est} and \code{Spec.link.ObsAsy} using the ggplot2 package
+#' 
 #' @param output a table generated from Specialization function
 #' @return a figure of estimated sample completeness with order q
 #'

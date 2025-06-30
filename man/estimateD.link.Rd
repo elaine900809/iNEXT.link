@@ -2,7 +2,7 @@
 % Please edit documentation in R/MainFun.R
 \name{estimateD.link}
 \alias{estimateD.link}
-\title{Compute species diversity with a particular of sample size/coverage}
+\title{Compute 3D with a particular of sample size/coverage}
 \usage{
 estimateD.link(
   data,
@@ -76,12 +76,14 @@ a \code{data.frame} of diversity table including the following arguments:
 data(beetles_plotA)
 output_est_qiTD <- estimateD.link(beetles_plotA, diversity = 'TD', q = c(0,1,2),
                                   base = "coverage", level = c(0.93, 0.97))
+output_est_qiTD
 
 # Phylogenetic network diversity for interaction data with two target sizes (1500 and 3000)
 data(beetles_plotA)
 data(beetles_row_tree)
 output_est_qiPD <- estimateD.link(beetles_plotA, diversity = 'PD', 
                                   base = "size", level = c(1500, 3000), nboot = 10, row.tree = beetles_row_tree)
+output_est_qiPD
 
 ## Functional network diversity for interaction data with two target coverages (93\% and 97\%)
 data(beetles_plotA)
@@ -89,6 +91,7 @@ data(beetles_row_distM)
 output_est_qiFD = estimateD.link(data = beetles_plotA, diversity = 'FD', q = c(0, 1, 2),
                                  base = "coverage", level = c(0.93, 0.97), nboot = 10,
                                  row.distM = beetles_row_distM, FDtype = "AUC")
+output_est_qiFD
 
 
 }

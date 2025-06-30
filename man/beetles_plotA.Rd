@@ -5,7 +5,7 @@
 Plants-beetle interaction network: plot A
 }
 \description{
-This dataset contains a quantitative plant?Mbeetle interaction network sampled from plot A, one of six experimental forest plots established in the Steigerwald Forest, northern Bavaria, Germany.
+This dataset contains a quantitative plant-beetle interaction network sampled from plot A, one of six experimental forest plots established in the Steigerwald Forest, northern Bavaria, Germany (Vogel, 2020).
 }
 \usage{data("beetles_plotA")}
 \format{

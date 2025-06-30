@@ -5,7 +5,7 @@
 Plants-beetle interaction networks
 }
 \description{
-This dataset contains two quantitative plant?Mbeetle interaction networks from two forest subplots (Open and Closed) in the Steigerwald Forest, northern Bavaria, Germany. The data were originally published by Vogel et al. (2020). For each subplot, the interaction frequencies (or strengths) between beetle species and plant species are recorded in a bipartite matrix.\cr
+This dataset contains two quantitative plant-beetle interaction networks from two forest subplots (Open and Closed) in the Steigerwald Forest, northern Bavaria, Germany. The data were originally published by Vogel et al. (2020). For each subplot, the interaction frequencies (or strengths) between beetle species and plant species are recorded in a bipartite matrix.\cr
 }
 \usage{data("beetles")}
 \format{

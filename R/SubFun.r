@@ -177,7 +177,7 @@ phyExpandData_ <- function(x, labels, phy, datatype="abundance"){
   }else if(datatype=="incidence_raw"){
     
     if(nrow(x) !=length(labels)) stop("Length of labels and incidence data not matach")
-    y <- iNEXT::as.incfreq(x)
+    y <- iNEXT.3D:::as.incfreq(x)
     t <- y[1]
     y <- y[-1]
     names(y) <- labels
@@ -3941,5 +3941,25 @@ ggplotColors <- function(g){
   h <- cumsum(c(15, rep(d,g - 1))) # Create cumulative sums to define hue values
   hcl(h = h, c = 100, l = 65) # Convert HCL values to hexadecimal color codes
 }
+
+
+
+Coverage <- function(data,datatype,m){
+  iNEXT.3D:::Coverage(data,datatype,m)
+}
+
+PhD.m.est <- function(ai,Lis,m,q,nt,reft,cal){
+  iNEXT.3D:::PhD.m.est(ai,Lis,m,q,nt,reft,cal)
+}
+
+invChatPD_abu <- function(x,ai,Lis,q,Cs,n,reft,cal){
+  iNEXT.3D:::invChatPD_abu(x,ai,Lis,q,Cs,n,reft,cal)
+}
+
+bootstrap_population_multiple_assemblage <- function(data,data_gamma,datatype){
+  iNEXT.beta3D:::bootstrap_population_multiple_assemblage(data,data_gamma,datatype)
+}
+
+
 
 

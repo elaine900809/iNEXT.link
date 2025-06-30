@@ -11,7 +11,7 @@ Spec.link.est(
   conf = 0.95,
   E.class = c(1:5),
   SC = NULL,
-  decomposition = "relative"
+  level = "weighted"
 )
 }
 \arguments{
@@ -26,9 +26,9 @@ sampling uncertainty and constructing confidence intervals. Bootstrap replicatio
 
 \item{E.class}{an integer vector between 1 to 5.}
 
-\item{SC}{a standardized coverage for calculating specialization index. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{C = Cmax}).}
+\item{SC}{a standardized coverage for calculating specialization index. If \code{NULL}, then this function computes the diversity estimates for the minimum sample coverage among all samples extrapolated to double reference sizes (\code{SC = Cmax}).}
 
-\item{decomposition}{decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.}
+\item{level}{the type of specialization measure: Choose "weighted" for weighted species-level specialization (default), or "network" for network-level specialization.}
 }
 \value{
 A list of several tables containing    estimated (or observed) evenness with order q.\cr
@@ -37,10 +37,10 @@ A list of several tables containing    estimated (or observed) evenness with ord
         \item{Specialization}{the specialization of order q.}
         \item{s.e.}{standard error of evenness.}
         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
-        \item{SC}{the target standardized coverage value. (only when \code{method = "Estimated"})}
-        \item{Dataset}{the Dataset name.}
+        \item{SC}{the target standardized coverage value.}
+        \item{Dataset}{the dataset name.}
         \item{Measure}{specialization class.}
-        \item{decomposition}{decomposition type.}
+        \item{level}{type of specialization measure.}
 }
 \description{
 Standardized estimation of specialization with order q

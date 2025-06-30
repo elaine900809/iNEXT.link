@@ -27,7 +27,7 @@ a separate plot for each combination of diversity order and assemblage (\code{fa
 all curves are in the same color (\code{color.var = "None"}); 
 use different colors for diversity orders (\code{color.var = "Order.q"}); 
 use different colors for assemblages/sites (\code{color.var = "Assemblage"}); 
-use different colors for combinations of diversity order and assemblage (\code{color.var = "Both"}).}
+use different colors for combinations of diversity orders and assemblage (\code{color.var = "Both"}).}
 }
 \value{
 a \code{ggplot2} object for sample-size-based rarefaction/extrapolation curve (\code{type = 1}), sample completeness curve (\code{type = 2}), and coverage-based rarefaction/extrapolation curve (\code{type = 3}).

@@ -11,7 +11,7 @@ Spec.link.ObsAsy(
   nboot = 30,
   conf = 0.95,
   E.class = c(1:5),
-  decomposition = "relative"
+  level = "weighted"
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ sampling uncertainty and constructing confidence intervals. Bootstrap replicatio
 
 \item{E.class}{an integer vector between 1 to 5.}
 
-\item{decomposition}{decomposition type: relative decomposition(decomposition = "relative") or absolute decomposition(decomposition = "absolute"). Default is relative.}
+\item{level}{the type of specialization measure: Choose "weighted" for weighted species-level specialization (default), or "network" for network-level specialization.}
 }
 \value{
 A list of several tables containing estimated (or observed) evenness with order q.\cr
@@ -38,15 +38,15 @@ A list of several tables containing estimated (or observed) evenness with order 
         \item{s.e.}{standard error of evenness.}
         \item{Spec.LCL, Spec.UCL}{the bootstrap lower and upper confidence limits for the evenness of order q at the specified level (with a default value of \code{0.95}).}
         \item{Method}{\code{"Asymptotic"} or \code{"Observed"}.}
-        \item{Dataset}{the Dataset name.}
+        \item{Dataset}{the dataset name.}
         \item{Measure}{specialization class.}
-        \item{decomposition}{decomposition type.}
+        \item{level}{type of specialization measure.}
 }
 \description{
 Asymptotic estimation (or observed) of specialization with order q
 }
 \examples{
 data(beetles)
-output_spec = Spec.link.ObsAsy(beetles)
-output_spec
+output_spec_ObsAsy = Spec.link.ObsAsy(beetles)
+output_spec_ObsAsy
 }
