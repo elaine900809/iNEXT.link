@@ -1,23 +1,3 @@
----
-output:
-  md_document:
-    variant: markdown_github
----
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include=FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "",
-  fig.path = "README/README-",
-  fig.align = 'center',
-  fig.retina=2, fig.width = 7, fig.height = 5,
-  warning = FALSE,
-  message = FALSE
-)
-options("width"=200)
-```
 
 iNEXT.link (R package)
 =====
