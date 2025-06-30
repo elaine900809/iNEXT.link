@@ -1910,7 +1910,7 @@ Spec.link.ObsAsy <- function(data, q = seq(0, 2, 0.2),
             mutate(Evenness = 1-Evenness, Even.LCL = 1-Even.LCL, Even.UCL = 1-Even.UCL) %>% 
             select(-Assemblage)%>%
             rename('Specialization'='Evenness', 'Spec.UCL' ='Even.LCL', 'Spec.LCL' ='Even.UCL')%>%
-            mutate(Network = names(long)[[i]],class = paste0("1 - E",e), level = "Network-level specialization")
+            mutate(Network = names(long)[[i]],class = paste0("1 - E",e), level = "Network-level")
         })
         # if(method == "Observed") index = 1
         # if(method == "Estimated") index = 2
@@ -2087,7 +2087,7 @@ Spec.link.est <- function(data, q = seq(0, 2, 0.2),
               mutate(Evenness = 1-Evenness, Even.LCL = 1-Even.LCL, Even.UCL = 1-Even.UCL) %>% 
               select(-Assemblage)%>%
               rename('Specialization'='Evenness', 'Spec.UCL' ='Even.LCL', 'Spec.LCL' ='Even.UCL')%>%
-              mutate(Network = names(long)[[i]],class = paste0("1 - E",e), level = "Network-level specialization")
+              mutate(Network = names(long)[[i]],class = paste0("1 - E",e), level = "Network-level")
           })
           # if(method == "Observed") index = 1
           # if(method == "Estimated") index = 2
